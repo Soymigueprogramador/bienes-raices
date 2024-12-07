@@ -1,0 +1,17 @@
+{
+  "type": "module",
+  "name": "bienes-raices",
+  "version": "1.0.0",
+  "description": "Este es un proyecto de bienes raíces, es un proyecto que se puede aplicar a la vida real",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Miguel Salazar",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2",
+    "nodemon": "^3.1.7",
+    "pug": "^3.0.3"
+  }
+}
