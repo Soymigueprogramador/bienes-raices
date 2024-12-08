@@ -1,7 +1,8 @@
-doctype html
-html(lang="en")
-  head
-    title Página de Inicio
-  body
-    h1 Bienvenido a Bienes Raíces
-    p Esta es la página principal.
+h1 Bienvenidos a nuestro proyecto
+
+if autenticado
+  p Mira todas nuestras propiedades que tenemos para vos
+else
+  p Inicia sesión
+  button 
+    a(href="./login.pug") Inicia sesion aqui
