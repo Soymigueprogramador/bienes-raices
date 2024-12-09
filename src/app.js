@@ -17,6 +17,9 @@ app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views')); 
 
+// Configurando el servidor para mostrar los archivos estaticos. 
+app.use(express.static('public'));
+
 // Configuración de rutas
 app.use('/', userRouter);
 
