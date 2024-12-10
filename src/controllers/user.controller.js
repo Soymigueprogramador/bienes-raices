@@ -10,7 +10,7 @@ const inicio = ( req, res ) => {
 // Controlador para el renderizado de la pagina del login
 const formLogin = ( req, res ) => {
     res.render('auth/login', {
-        hola: true
+        paginaLogin: "Iniciar sesion"
       });
 };
 

@@ -18,11 +18,7 @@ app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views')); 
 
 // Configurando el servidor para mostrar los archivos estaticos. 
-app.use(express.static(path.join(__dirname, 'public')));
-app.get('/css/app.css', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public/css/app.css'));
-});
-
+app.use(express.static('public'));
 
 // Configuración de rutas
 app.use('/', userRouter);

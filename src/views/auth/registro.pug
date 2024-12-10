@@ -1,28 +1,28 @@
 extends ../layout/index
 
 block contenido
-  .py-10
-    h1.text-center.text-4xl.font-extrabold Bienes 
-      span.font-normal Rices
-    h2.text-center.text-2xl.font-bold.mt-2 #{pagina}
+  .titulo
+    h1.bienvenida Bienes
+      span.rices Rices
+    h2.subtitulo #{pagina}
 
-  .mt-8.mx-auto.max-w-md
-    .bg-blue-500.py-8.px-6.shadow-md.rounded-lg
+  .formulario
+    .form-container
       form(action="#")
-        div.mb-6
-          label.block.text-sm.uppercase.text-gray-200.mb-2.font-bold(for="nombre") Nombre
-          input#nombre.w-full.px-4.py-3.border.border-gray-300.rounded-md.shadow-sm.placeholder-gray-400(type="text" name="nombre" placeholder="Ingresa tu nombre")
+        div.form-group
+          label(for="nombre") Nombre
+          input#nombre.input-text(type="text" name="nombre" placeholder="Ingresa tu nombre")
 
-        div.mb-6
-          label.block.text-sm.uppercase.text-gray-200.mb-2.font-bold(for="email") Email
-          input#email.w-full.px-4.py-3.border.border-gray-300.rounded-md.shadow-sm.placeholder-gray-400(type="email" name="email" placeholder="Ingresa tu email")
+        div.form-group
+          label(for="email") Email
+          input#email.input-text(type="email" name="email" placeholder="Ingresa tu email")
 
-        div.mb-6
-          label.block.text-sm.uppercase.text-gray-200.mb-2.font-bold(for="password") Contraseña
-          input#password.w-full.px-4.py-3.border.border-gray-300.rounded-md.shadow-sm.placeholder-gray-400(type="password" name="password" placeholder="Ingresa tu contraseña")
+        div.form-group
+          label(for="password") Contraseña
+          input#password.input-text(type="password" name="password" placeholder="Ingresa tu contraseña")
 
-        div.mb-6
-          label.block.text-sm.uppercase.text-gray-200.mb-2.font-bold(for="confirm-password") Repetir contraseña
-          input#confirm-password.w-full.px-4.py-3.border.border-gray-300.rounded-md.shadow-sm.placeholder-gray-400(type="password" name="confirm-password" placeholder="Repite tu contraseña")
-        
-        input.w-full.bg-indigo-600.text-white.py-3.rounded-md.shadow-md.hover(type="submit" value="Crear cuenta")
+        div.form-group
+          label(for="confirm-password") Repetir contraseña
+          input#confirm-password.input-text(type="password" name="confirm-password" placeholder="Repite tu contraseña")
+
+        input.submit(type="submit" value="Crear cuenta")

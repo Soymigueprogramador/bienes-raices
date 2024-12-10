@@ -1,5 +1,22 @@
 extends ../layout/index
 
 block contenido
-  div 
-    h1.text-center.text-2xl.font-extrabold Inicio sesion 
+  .titulo
+    h1.bienvenida Bienes
+      span.rices Rices
+    h2.subtitulo #{paginaLogin}
+
+  .formulario
+    .form-container
+      form(action="#")
+        div.form-group
+
+        div.form-group
+          label(for="email") Email
+          input#email.input-text(type="email" name="email" placeholder="Ingresa tu email")
+
+        div.form-group
+          label(for="password") Contraseña
+          input#password.input-text(type="password" name="password" placeholder="Ingresa tu contraseña")
+
+        input.submit(type="submit" value="Crear cuenta")
