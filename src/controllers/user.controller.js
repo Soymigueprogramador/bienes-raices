@@ -2,7 +2,7 @@
 
 // Controlador para el renderizado de la pagina de inicio.
 const inicio = ( req, res ) => {
-    res.render('auth/index', {
+    res.render('layout/index', {
         autenticado: false
       });
 };
@@ -15,14 +15,15 @@ const formLogin = ( req, res ) => {
 };
 
 // Controlador para el renderizado de la pagina del registro. 
-const formregistro = ( req, res ) => {
+const formRegistro = (req, res) => {
     res.render('auth/registro', {
-        Holastamos: true
-      });
+        pagina: 'Crear cuenta',
+    });
 };
+
 
 export {
     inicio,
     formLogin,
-    formregistro
+    formRegistro
 };
