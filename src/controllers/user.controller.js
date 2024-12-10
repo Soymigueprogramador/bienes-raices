@@ -21,9 +21,15 @@ const formRegistro = (req, res) => {
     });
 };
 
+const recuperarCuenta = (req, res) => {
+    res.render('auth/recuperarCuenta', {
+        paginaRecuperarCuenta: 'Recuperar mi cuenta',
+    });
+};
 
 export {
     inicio,
     formLogin,
-    formRegistro
+    formRegistro,
+    recuperarCuenta
 };

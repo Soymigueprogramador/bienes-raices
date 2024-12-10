@@ -98,3 +98,13 @@ input.submit:hover {
     background-color: green;
 }
 
+.crear-cuenta {
+    color: #f9fafb;
+    text-align: center;
+}
+
+.enlace, a {
+    color: #000;
+    cursor: pointer; 
+    margin-left: 10px;
+}
