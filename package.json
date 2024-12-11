@@ -10,9 +10,12 @@
   "author": "Miguel Salazar",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "mysql2": "^3.11.5",
     "nodemon": "^3.1.7",
-    "pug": "^3.0.3"
+    "pug": "^3.0.3",
+    "sequelize": "^6.37.5"
   },
   "devDependencies": {
     "postcss-cli": "^11.0.0"

@@ -3,11 +3,13 @@ import express from 'express';
 import path from 'path';
 import { __dirname } from './util.js'; 
 import userRouter from './routes/user.router.js';
+import db from './config/db.js';
+import dotenv from 'dotenv';
 
 // Configurando constantes para el servidor
-const nameProyect = 'Bienes Raíces';
+const nameProyect = process.env.NAME_PROYECT
 const app = express();
-const PORT = 8080;
+const port = process.env.PORT
 
 // Middlewares
 app.use(express.json());
@@ -23,7 +25,17 @@ app.use(express.static('public'));
 // Configuración de rutas
 app.use('/', userRouter);
 
+// Conexion a la base de datos.
+(async () => {
+  try {
+      await db.authenticate();
+      console.log('Conexión exitosa a la base de datos');
+  } catch (error) {
+      console.error('Error al conectar a la base de datos:', error.message);
+  }
+})();
+
 // Iniciando el servidor
-app.listen(PORT, () => {
-  console.log(`Bienvenidos a "${nameProyect}", los esperamos en el puerto ${PORT}`);
+app.listen(port, () => {
+  console.log(`Bienvenidos a "${nameProyect}", los esperamos en el puerto ${process.env.PORT}`);
 });
