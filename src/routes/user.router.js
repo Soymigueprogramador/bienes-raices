@@ -1,6 +1,6 @@
 // Importando dependencias
 import express from 'express';
-import { formLogin, formRegistro, inicio, recuperarCuenta } from '../controllers/user.controller.js';
+import { formLogin, formRegistro, inicio, recuperarCuenta, registrar } from '../controllers/user.controller.js';
 
 const router = express.Router();
 
@@ -8,7 +8,8 @@ const router = express.Router();
 router.get('/', inicio);
 router.get('/login', formLogin);
 router.get('/registro', formRegistro);
-router.get('/recuperarCuenta', recuperarCuenta);
+router.post('/auth/registro', registrar);
+router.get('/registro', formRegistro);
 
 // Ruta para iniciar sesión
 router.get('/login', (req, res) => {

@@ -27,9 +27,21 @@ const recuperarCuenta = (req, res) => {
     });
 };
 
+const registrar = ( req, res ) => {
+    const [ nombre, email, password, repetirPassword ] = req.body;
+    if (password !== repetirPassword) {
+        return res.render('auth/registro', {
+            pagina: 'Crear cuenta',
+            error: 'Las contraseñas no coinciden',
+        });
+    }
+    res.redirect('/login'); 
+};
+
 export {
     inicio,
     formLogin,
     formRegistro,
-    recuperarCuenta
+    recuperarCuenta,
+    registrar
 };

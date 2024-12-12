@@ -8,24 +8,24 @@ block contenido
 
   .formulario
     .form-container
-      form(action="#")
-        div.form-group
+      form(method="post", action="/auth/registro")
+        .form-group
           label(for="nombre") Nombre
-          input#nombre.input-text(type="text" name="nombre" placeholder="Ingresa tu nombre")
+          input#nombre.input-text(type="text" name="nombre" placeholder="Ingresa tu nombre" required)
 
-        div.form-group
+        .form-group
           label(for="email") Email
-          input#email.input-text(type="email" name="email" placeholder="Ingresa tu email")
+          input#email.input-text(type="email" name="email" placeholder="Ingresa tu email" required)
 
-        div.form-group
+        .form-group
           label(for="password") Contraseña
-          input#password.input-text(type="password" name="password" placeholder="Ingresa tu contraseña")
+          input#password.input-text(type="password" name="password" placeholder="Ingresa tu contraseña" required)
 
-        div.form-group
+        .form-group
           label(for="confirm-password") Repetir contraseña
-          input#confirm-password.input-text(type="password" name="confirm-password" placeholder="Repite tu contraseña")
+          input#confirm-password.input-text(type="password" name="confirm-password" placeholder="Repite tu contraseña" required)
 
-        input.submit(type="submit" value="Crear cuenta") 
-        
-        p.crear-cuenta ¿Ya tenes cuenta? 
-          a.enlace(href="/login") Inicia sesion
+        input.submit(type="submit" value="Crear cuenta")
+
+        p.crear-cuenta ¿Ya tienes cuenta? 
+          a.enlace(href="/login") Inicia sesión
