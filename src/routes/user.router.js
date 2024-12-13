@@ -9,7 +9,6 @@ router.get('/', inicio);
 router.get('/login', formLogin);
 router.get('/registro', formRegistro);
 router.post('/auth/registro', registrar);
-router.get('/registro', formRegistro);
 
 // Ruta para iniciar sesión
 router.get('/login', (req, res) => {
