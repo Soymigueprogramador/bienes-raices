@@ -3,7 +3,7 @@ import { DataTypes, Sequelize } from "sequelize";
 import db from '../config/db.js'; 
 
 // Definiendo como se llamara la tabla en MySQL. 
-const user = db-define('user', {
+const user = db.define('user', {
     name: {
         type: DataTypes.STRING, 
         allowNull: false
@@ -13,7 +13,7 @@ const user = db-define('user', {
         allowNull: false
     },
     password: {
-        type: DataTypes.NUMBER, 
+        type: DataTypes.STRING, 
         allowNull: false
     },
     token: DataTypes.STRING,
