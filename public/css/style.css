@@ -108,3 +108,19 @@ input.submit:hover {
     cursor: pointer; 
     margin-left: 10px;
 }
+
+/* Estilos para los errores */
+.errores {
+    max-width: 448px; 
+    margin: 40px auto;
+}
+
+.mostrar-errores {
+    background-color: #dc2626; 
+  color: #ffffff; 
+  text-transform: uppercase; 
+  text-align: center; 
+  padding: 8px; 
+  margin-bottom: 4px; 
+  font-weight: bold;
+}

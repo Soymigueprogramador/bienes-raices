@@ -30,52 +30,55 @@ const recuperarCuenta = (req, res) => {
 };
 
 const registrar = async (req, res) => {
-    // Validación de los campos del formulario de registro
-    await check('nombre').notEmpty().withMessage('Este campo es obligatorio').run(req)
-    await check('email').isEmail().withMessage('Este campo es obligatorio').run(req);
-    await check('password').isStrongPassword().isLength({ min: 8 }).withMessage('Este campo es obligatorio. La contraseña tiene que tener minimo 8 caracteres').run(req);
-    await check('repetirPassword').isStrongPassword().isLength({ min: 8 }).withMessage('Este campo es obligatorio. La contraseña tiene que tener minimo 8 caracteres').run(req);
+    // Validaciones de los campos del formulario
+    await check('nombre')
+        .notEmpty()
+        .withMessage('El campo nombre es obligatorio')
+        .run(req);
 
-    // Mostrar los resultados de las validaciones
-    let resultados = validationResult(req);
+    await check('email')
+        .isEmail()
+        .withMessage('El email debe ser un email válido')
+        .run(req);
+
+    await check('password')
+        .isLength({ min: 8 })
+        .withMessage('La contraseña debe tener al menos 8 caracteres')
+        .run(req);
+
+    await check('repetirPassword')
+        .custom((value, { req }) => value === req.body.password)
+        .withMessage('Las contraseñas no coinciden')
+        .run(req);
+
+    // Obtener los resultados de las validaciones
+    const resultados = validationResult(req);
     if (!resultados.isEmpty()) {
-        return res.status(400).json(resultados.array());
-        
-    }
-
-    // Desestructuración y validación de los campos
-    const { nombre, email, password, repetirPassword } = req.body;
-
-    if (!nombre || !email || !password || !repetirPassword) {
+        // Renderizar la vista con errores y valores para campos no sensibles
         return res.render('auth/registro', {
             pagina: 'Crear cuenta',
-            error: 'Todos los campos son obligatorios',
+            errores: resultados.array(),
+            datos: { nombre: req.body.nombre, email: req.body.email } // Mantener nombre y email
         });
     }
 
-    // Validación de contraseñas
-    if (password !== repetirPassword) {
-        return res.render('auth/registro', {
-            pagina: 'Crear cuenta',
-            error: 'Las contraseñas no coinciden',
-        });
-    }
+    // Si no hay errores, procesar los datos
+    const { nombre, email, password } = req.body;
 
-    // Mostrar los datos por consola
-    console.log('Datos recibidos:', { nombre, email, password });
-
-    // Simulación de creación del usuario (asegúrate de que user.create sea asincrónico)
     try {
-        const user = await User.create(req.body); // Esto supone que usas un modelo User y que create es una función asíncrona
+        // Crear el usuario
+        const user = await User.create({ nombre, email, password });
         console.log('Usuario creado:', user);
 
-        // Redireccionar al login
+        // Redireccionar al login para evitar el reenvío del formulario
         return res.redirect('/login');
     } catch (error) {
         console.error('Error al crear el usuario:', error);
+
+        // Renderizar con un error general
         return res.status(500).render('auth/registro', {
             pagina: 'Crear cuenta',
-            error: 'Hubo un error al crear el usuario',
+            error: 'Hubo un error al crear el usuario'
         });
     }
 };
