@@ -1,6 +1,7 @@
 import { check, validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
 import User from '../models/User.model.js';
+import { where } from 'sequelize';
 
 // Controlador para el renderizado de la página de inicio.
 const inicio = (req, res) => {
@@ -91,8 +92,21 @@ const registrar = async (req, res) => {
             error: 'Hubo un error al crear el usuario',
         });
     }
-};
 
+    // Verificacion para no repetir usuarios. 
+    const existingUser = await User.findOne({ where: { email: req.body.email } });
+    if (existingUser) {
+        console.log('Este usuario ya existe');
+        return res.render('auth/registro', {
+            pagina: 'Crear cuenta',
+            errores: [{ msg: 'Este usuario ya existe' }],
+            user: {
+            nombre: req.body.nombre,
+            email: req.body.email,
+        },
+    });
+    }
+};
 
 export {
     inicio,
