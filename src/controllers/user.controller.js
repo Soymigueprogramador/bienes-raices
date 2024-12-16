@@ -1,19 +1,18 @@
 import { check, validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
 import User from '../models/User.model.js';
-import { where } from 'sequelize';
 
 // Controlador para el renderizado de la página de inicio.
 const inicio = (req, res) => {
     res.render('layout/index', {
-        autenticado: false
+        autenticado: false,
     });
 };
 
-// Controlador para el renderizado de la página del login.
+// Controlador para el renderizado de la página de login.
 const formLogin = (req, res) => {
     res.render('auth/login', {
-        paginaLogin: "Iniciar sesión"
+        paginaLogin: "Iniciar sesión",
     });
 };
 
@@ -24,14 +23,16 @@ const formRegistro = (req, res) => {
     });
 };
 
+// Controlador para el renderizado de la página de recuperación de cuenta.
 const recuperarCuenta = (req, res) => {
     res.render('auth/recuperarCuenta', {
         paginaRecuperarCuenta: 'Recuperar mi cuenta',
     });
 };
 
+// Controlador para registrar un usuario nuevo.
 const registrar = async (req, res) => {
-    // Validaciones de los campos del formulario
+    // Validaciones de los campos del formulario.
     await check('nombre')
         .notEmpty()
         .withMessage('El campo nombre es obligatorio')
@@ -52,7 +53,7 @@ const registrar = async (req, res) => {
         .withMessage('Las contraseñas no coinciden')
         .run(req);
 
-    // Obtener los resultados de las validaciones
+    // Obtener los resultados de las validaciones.
     const resultados = validationResult(req);
     if (!resultados.isEmpty()) {
         return res.render('auth/registro', {
@@ -65,35 +66,7 @@ const registrar = async (req, res) => {
         });
     }
 
-    // Si no hay errores, procesar los datos
-    const { nombre, email, password } = req.body;
-
-    try {
-        // Encriptar la contraseña antes de guardarla
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        // Crear el usuario
-        const user = await User.create({
-            name: nombre, // Mapear "nombre" a "name"
-            email,
-            password: hashedPassword,
-        });
-
-        console.log('Usuario creado:', user);
-
-        // Redireccionar al login
-        return res.redirect('/login');
-    } catch (error) {
-        console.error('Error al crear el usuario:', error);
-
-        // Renderizar la página con el mensaje de error
-        return res.status(500).render('auth/registro', {
-            pagina: 'Crear cuenta',
-            error: 'Hubo un error al crear el usuario',
-        });
-    }
-
-    // Verificacion para no repetir usuarios. 
+    // Verificación para evitar usuarios duplicados.
     const existingUser = await User.findOne({ where: { email: req.body.email } });
     if (existingUser) {
         console.log('Este usuario ya existe');
@@ -101,17 +74,46 @@ const registrar = async (req, res) => {
             pagina: 'Crear cuenta',
             errores: [{ msg: 'Este usuario ya existe' }],
             user: {
-            nombre: req.body.nombre,
-            email: req.body.email,
-        },
-    });
+                nombre: req.body.nombre,
+                email: req.body.email,
+            },
+        });
+    }
+
+    // Si no hay errores y el usuario no existe, procesar los datos.
+    const { nombre, email, password } = req.body;
+
+    try {
+        // Encriptar la contraseña antes de guardarla.
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Crear el usuario.
+        const user = await User.create({
+            name: nombre, // Mapear "nombre" a "name".
+            email,
+            password: hashedPassword,
+        });
+
+        console.log('Usuario creado:', user);
+
+        // Redireccionar al login.
+        return res.redirect('/login');
+    } catch (error) {
+        console.error('Error al crear el usuario:', error);
+
+        // Renderizar la página con el mensaje de error.
+        return res.status(500).render('auth/registro', {
+            pagina: 'Crear cuenta',
+            errores: [{ msg: 'Hubo un error al crear el usuario' }],
+        });
     }
 };
 
+// Exportar los controladores.
 export {
     inicio,
     formLogin,
     formRegistro,
     recuperarCuenta,
-    registrar
+    registrar,
 };
