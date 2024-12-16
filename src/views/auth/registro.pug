@@ -6,21 +6,21 @@ block contenido
       span.rices Rices
     h2.subtitulo #{pagina}
 
-    if errores 
+    if errores
       .errores
-        each error in errores  
+        each error in errores
           p.mostrar-errores= error.msg
 
   .formulario
     .form-container
-      form(method="POST", action="/auth/registro" noValidate)
+      form(method="POST", action="/auth/registro", noValidate)
         .form-group
           label(for="nombre") Nombre
-          input#nombre.input-text(type="text", name="nombre", placeholder="Ingresa tu nombre", value=`${datos && datos.nombre ? datos.nombre : ''}`, required)
+          input#nombre.input-text(type="text", name="nombre", placeholder="Ingresa tu nombre", value='', required)
 
         .form-group
           label(for="email") Email
-          input#email.input-text(type="email", name="email", placeholder="Ingresa tu email", value=`${datos && datos.email ? datos.email : ''}`, required)
+          input#email.input-text(type="email", name="email", placeholder="Ingresa tu email", value='', required)
 
         .form-group
           label(for="password") Contraseña
@@ -30,7 +30,7 @@ block contenido
           label(for="confirm-password") Repetir contraseña
           input#repetirPassword.input-text(type="password", name="repetirPassword", placeholder="Repite tu contraseña", required)
 
-        input.submit(type="submit" value="Crear cuenta")
+        input.submit(type="submit", value="Crear cuenta")
 
         p.crear-cuenta ¿Ya tienes cuenta? 
           a.enlace(href="/login") Inicia sesión

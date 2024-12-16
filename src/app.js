@@ -26,15 +26,13 @@ app.use(express.static('public'));
 app.use('/', userRouter);
 
 // Conexion a la base de datos.
-(async () => {
-  try {
-      await db.authenticate();
-      db.sync();
-      console.log('Conexión exitosa a la base de datos');
-  } catch (error) {
-      console.error('Error al conectar a la base de datos:', error.message);
-  }
-})();
+try {
+  await db.authenticate();
+  console.log('Conexión exitosa a la base de datos.');
+  await db.sync();
+} catch (error) {
+  console.error('Error al conectar con la base de datos:', error);
+}
 
 // Iniciando el servidor
 app.listen(port, () => {

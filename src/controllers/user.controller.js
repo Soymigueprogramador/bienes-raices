@@ -1,22 +1,22 @@
-// Creando controladores 7 importando los archivos necesarios. 
-import user from '../models/user.model.js';
 import { check, validationResult } from 'express-validator';
+import bcrypt from 'bcrypt';
+import User from '../models/User.model.js';
 
-// Controlador para el renderizado de la pagina de inicio.
-const inicio = ( req, res ) => {
+// Controlador para el renderizado de la página de inicio.
+const inicio = (req, res) => {
     res.render('layout/index', {
         autenticado: false
-      });
+    });
 };
 
-// Controlador para el renderizado de la pagina del login
-const formLogin = ( req, res ) => {
+// Controlador para el renderizado de la página del login.
+const formLogin = (req, res) => {
     res.render('auth/login', {
-        paginaLogin: "Iniciar sesion"
-      });
+        paginaLogin: "Iniciar sesión"
+    });
 };
 
-// Controlador para el renderizado de la pagina del registro. 
+// Controlador para el renderizado de la página de registro.
 const formRegistro = (req, res) => {
     res.render('auth/registro', {
         pagina: 'Crear cuenta',
@@ -54,11 +54,13 @@ const registrar = async (req, res) => {
     // Obtener los resultados de las validaciones
     const resultados = validationResult(req);
     if (!resultados.isEmpty()) {
-        // Renderizar la vista con errores y valores para campos no sensibles
         return res.render('auth/registro', {
             pagina: 'Crear cuenta',
             errores: resultados.array(),
-            datos: { nombre: req.body.nombre, email: req.body.email } // Mantener nombre y email
+            user: {
+                nombre: req.body.nombre,
+                email: req.body.email,
+            },
         });
     }
 
@@ -66,19 +68,27 @@ const registrar = async (req, res) => {
     const { nombre, email, password } = req.body;
 
     try {
+        // Encriptar la contraseña antes de guardarla
+        const hashedPassword = await bcrypt.hash(password, 10);
+
         // Crear el usuario
-        const user = await User.create({ nombre, email, password });
+        const user = await User.create({
+            name: nombre, // Mapear "nombre" a "name"
+            email,
+            password: hashedPassword,
+        });
+
         console.log('Usuario creado:', user);
 
-        // Redireccionar al login para evitar el reenvío del formulario
+        // Redireccionar al login
         return res.redirect('/login');
     } catch (error) {
         console.error('Error al crear el usuario:', error);
 
-        // Renderizar con un error general
+        // Renderizar la página con el mensaje de error
         return res.status(500).render('auth/registro', {
             pagina: 'Crear cuenta',
-            error: 'Hubo un error al crear el usuario'
+            error: 'Hubo un error al crear el usuario',
         });
     }
 };
