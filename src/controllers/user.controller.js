@@ -1,6 +1,7 @@
 import { check, validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
 import User from '../models/User.model.js';
+import { generandoId } from '../helpers/tokend.js'; 
 
 // Controlador para el renderizado de la página de inicio.
 const inicio = (req, res) => {
@@ -44,8 +45,8 @@ const registrar = async (req, res) => {
         .run(req);
 
     await check('password')
-        .isLength({ min: 8 })
-        .withMessage('La contraseña debe tener al menos 8 caracteres')
+        .isLength({ min: 4 })
+        .withMessage('La contraseña debe tener al menos 4 caracteres')
         .run(req);
 
     await check('repetirPassword')
@@ -56,7 +57,7 @@ const registrar = async (req, res) => {
     // Obtener los resultados de las validaciones.
     const resultados = validationResult(req);
     if (!resultados.isEmpty()) {
-        return res.render('auth/registro', {
+        return res.render('auth/message', {
             pagina: 'Crear cuenta',
             errores: resultados.array(),
             user: {
@@ -89,11 +90,18 @@ const registrar = async (req, res) => {
 
         // Crear el usuario.
         const user = await User.create({
-            name: nombre, // Mapear "nombre" a "name".
+            name: nombre, 
             email,
             password: hashedPassword,
+            yocken: generandoId()
         });
 
+        // Mensaje para pedirle al usuario que configurme su cuenta. 
+        res.render('templates/message', {
+            pagina: '¡Cuenta creada con éxito!',
+            message: 'Por motivos de seguridad, necesitamos que confirmes tu cuenta. Para ello, te enviaremos un correo electrónico con los pasos a seguir.'
+        });
+        
         console.log('Usuario creado:', user);
 
         // Redireccionar al login.

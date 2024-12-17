@@ -124,3 +124,11 @@ input.submit:hover {
   margin-bottom: 4px; 
   font-weight: bold;
 }
+
+/* Mensaje de confirmacion de cuenta */
+.mensaje-confirmacion {
+    font-size: 1.25rem; 
+    font-weight: 700; 
+    text-align: center;
+    margin: 2.5rem 0; 
+}
