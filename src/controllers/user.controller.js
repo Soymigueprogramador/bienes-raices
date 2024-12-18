@@ -2,6 +2,7 @@ import { check, validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
 import User from '../models/User.model.js';
 import { generandoId } from '../helpers/tokend.js'; 
+import { emailRegistro } from '../helpers/emails.js';
 
 // Controlador para el renderizado de la página de inicio.
 const inicio = (req, res) => {
@@ -57,7 +58,7 @@ const registrar = async (req, res) => {
     // Obtener los resultados de las validaciones.
     const resultados = validationResult(req);
     if (!resultados.isEmpty()) {
-        return res.render('auth/message', {
+        return res.render('auth/registro', {
             pagina: 'Crear cuenta',
             errores: resultados.array(),
             user: {
@@ -90,22 +91,23 @@ const registrar = async (req, res) => {
 
         // Crear el usuario.
         const user = await User.create({
-            name: nombre, 
+            name: nombre,
             email,
             password: hashedPassword,
-            yocken: generandoId()
+            yocken: generandoId(),
         });
 
-        // Mensaje para pedirle al usuario que configurme su cuenta. 
-        res.render('templates/message', {
-            pagina: '¡Cuenta creada con éxito!',
-            message: 'Por motivos de seguridad, necesitamos que confirmes tu cuenta. Para ello, te enviaremos un correo electrónico con los pasos a seguir.'
+        // Enviando el email de confirmación de la cuenta.
+        emailRegistro({
+            nombre: user.name, 
+            email: user.email,
+            token: user.yocken, 
         });
-        
+
         console.log('Usuario creado:', user);
 
-        // Redireccionar al login.
-        return res.redirect('/login');
+        // Redireccionar al login con un mensaje flash (opcional).
+        return res.redirect('/login'); 
     } catch (error) {
         console.error('Error al crear el usuario:', error);
 
