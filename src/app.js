@@ -10,7 +10,7 @@ import dotenv from 'dotenv';
 // Configurando constantes para el servidor
 const nameProyect = process.env.NAME_PROYECT
 const app = express();
-const port = process.env.PORT
+const port = process.env.PORT || 8080;
 
 // Middlewares
 app.use(express.json());

@@ -2,6 +2,7 @@
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 
+
 // Activando las variables de entorno
 dotenv.config();
 
@@ -21,7 +22,7 @@ const createTransport = () => {
 
 // Función para enviar correo de confirmación de cuenta
 const emailRegistro = async (datos) => {
-    const { email, nombre } = datos;
+    const { nombre, email, token, } = datos;
     const transport = createTransport(); // Crear el transporte según configuración
 
     try {
@@ -33,7 +34,7 @@ const emailRegistro = async (datos) => {
             html: `
                 <p>Hola ${nombre}, necesitamos que confirmes tu cuenta en Bienes Raíces.</p>
                 <p>Puedes confirmar tu cuenta desde este enlace: 
-                    <a href="#">Confirmar cuenta</a>
+                    <a href="${process.env.BACKEND_URL}: ${process.eventNames.PORT ?? 8080}/auth/confirmar/${token}">Confirmar cuenta</a> 
                 </p>
                 <p>Si no creaste esta cuenta, puedes ignorar este mensaje. Lamentamos las molestias.</p>
             `,
