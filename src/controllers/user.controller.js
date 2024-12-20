@@ -3,14 +3,49 @@ import bcrypt from 'bcrypt';
 import User from '../models/User.model.js';
 import { generandoId } from '../helpers/tokend.js';
 import { emailRegistro } from '../helpers/emails.js';
+import { where } from 'sequelize';
 
 // Controlador para confirmar la cuenta
-const comprobar = (req, res, next) => {
+const comprobar = async (req, res) => {
     console.log('Comprobando la cuenta...!');
     const { token } = req.params;
     console.log(token);
-    next();
+
+    try {
+        // Verificando si el token es válido
+        const user = await User.findOne({ where: { token } });
+
+        if (!user) {
+            // Renderizar la plantilla con error
+            return res.render('auth/cuentaConfirmada', {
+                pagina: 'Error al confirmar tu cuenta',
+                message: 'Ocurrió un error al confirmar tu cuenta, por favor comunícate con el soporte técnico.',
+                error: true // Indica que hay un error
+            });
+        }
+
+        // Si el usuario existe, confirmamos su cuenta
+        user.token = null;
+        user.confirmado = true;
+        await user.save();
+
+        // Renderizar la plantilla con éxito
+        return res.render('auth/cuentaConfirmada', {
+            pagina: 'Cuenta confirmada',
+            message: '¡Cuenta confirmada exitosamente!',
+            error: false // Indica que no hay error
+        });
+    } catch (error) {
+        console.error('Error al comprobar la cuenta:', error);
+
+        return res.status(500).render('auth/cuentaConfirmada', {
+            pagina: 'Error al confirmar tu cuenta',
+            message: 'Ocurrió un error inesperado. Por favor, intenta más tarde.',
+            error: true
+        });
+    }
 };
+
 
 // Controlador para el renderizado de la página de inicio
 const inicio = (req, res) => {

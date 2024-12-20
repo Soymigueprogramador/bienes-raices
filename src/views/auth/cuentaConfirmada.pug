@@ -1,0 +1,14 @@
+extends ../layout/index
+
+block contenido
+  .titulo
+    h1.bienvenida 
+      | Bienes 
+      span.rices Rices
+    h2.subtitulo= pagina
+    
+  .mostrar-mensaje-confirmacion
+    if error
+      p.mensaje-confirmacion.bg-red-500= message
+    else
+      p.mensaje-confirmacion.bg-green-500= message
