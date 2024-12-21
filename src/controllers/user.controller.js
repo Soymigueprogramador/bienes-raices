@@ -4,6 +4,7 @@ import User from '../models/User.model.js';
 import { generandoId } from '../helpers/tokend.js';
 import { emailRegistro } from '../helpers/emails.js';
 import { where } from 'sequelize';
+import { v4 as uuidv4 } from 'uuid';
 
 // Controlador para confirmar la cuenta
 const comprobar = async (req, res) => {
@@ -18,11 +19,18 @@ const comprobar = async (req, res) => {
         if (!user) {
             // Renderizar la plantilla con error
             return res.render('auth/cuentaConfirmada', {
-                pagina: 'Error al confirmar tu cuenta',
-                message: 'Ocurrió un error al confirmar tu cuenta, por favor comunícate con el soporte técnico.',
-                error: true // Indica que hay un error
+                pagina: 'Cuenta confirmada',
+                message: '¡Cuenta confirmada exitosamente!',
+                error: true
             });
+            
         }
+        console.log('Token recibido:', token);
+        console.log('Usuario encontrado:', user);
+        console.log({ pagina: 'Cuenta confirmada', message: '¡Cuenta confirmada exitosamente!', error: false });
+        // Validando usuarios.
+        console.log(user);
+        console.log(user.token);
 
         // Si el usuario existe, confirmamos su cuenta
         user.token = null;
@@ -107,22 +115,26 @@ const registrar = async (req, res) => {
         });
     }
 
-    const { nombre, email, password } = req.body;
-
+    const { nombre, email, password} = req.body;
+    const generandoId = () => {
+        return uuidv4(); 
+    };
+    const token = generandoId(); // Genera el token aquí.
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = await User.create({
             name: nombre,
             email,
             password: hashedPassword,
-            yocken: generandoId(),
+            token,
         });
 
         emailRegistro({
             nombre: user.name,
             email: user.email,
-            token: user.yocken,
+            token: user.token, 
         });
+        console.log('Token generado:', user.token);
 
         return res.render('templates/message', {
             pagina: 'Cuenta creada',
