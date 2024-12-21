@@ -1,95 +1,65 @@
 import { check, validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
 import User from '../models/User.model.js';
-import { generandoId } from '../helpers/tokend.js';
 import { emailRegistro } from '../helpers/emails.js';
-import { where } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
 
 // Controlador para confirmar la cuenta
 const comprobar = async (req, res) => {
-    console.log('Comprobando la cuenta...!');
     const { token } = req.params;
-    console.log(token);
-
     try {
         // Verificando si el token es válido
         const user = await User.findOne({ where: { token } });
-
         if (!user) {
-            // Renderizar la plantilla con error
-            return res.render('auth/cuentaConfirmada', {
-                pagina: 'Cuenta confirmada',
-                message: '¡Cuenta confirmada exitosamente!',
-                error: true
+            return res.status(404).render('auth/cuentaConfirmada', {
+                pagina: 'Cuenta no encontrada',
+                message: 'El token no es válido o la cuenta ya fue confirmada.',
+                error: true,
             });
-            
         }
-        console.log('Token recibido:', token);
-        console.log('Usuario encontrado:', user);
-        console.log({ pagina: 'Cuenta confirmada', message: '¡Cuenta confirmada exitosamente!', error: false });
-        // Validando usuarios.
-        console.log(user);
-        console.log(user.token);
 
         // Si el usuario existe, confirmamos su cuenta
         user.token = null;
         user.confirmado = true;
         await user.save();
 
-        // Renderizar la plantilla con éxito
         return res.render('auth/cuentaConfirmada', {
             pagina: 'Cuenta confirmada',
             message: '¡Cuenta confirmada exitosamente!',
-            error: false // Indica que no hay error
+            error: false,
         });
     } catch (error) {
         console.error('Error al comprobar la cuenta:', error);
-
         return res.status(500).render('auth/cuentaConfirmada', {
             pagina: 'Error al confirmar tu cuenta',
             message: 'Ocurrió un error inesperado. Por favor, intenta más tarde.',
-            error: true
+            error: true,
         });
     }
 };
 
-
-// Controlador para el renderizado de la página de inicio
-const inicio = (req, res) => {
-    res.render('layout/index', {
-        autenticado: false,
-    });
-};
-
-// Controlador para el renderizado de la página de login
-const formLogin = (req, res) => {
-    res.render('auth/login', {
-        paginaLogin: "Iniciar sesión",
-    });
-};
-
-// Controlador para el renderizado de la página de registro
-const formRegistro = (req, res) => {
-    res.render('auth/registro', {
-        pagina: 'Crear cuenta',
-    });
-};
-
-// Controlador para el renderizado de la página de recuperación de cuenta
-const recuperarCuenta = (req, res) => {
-    res.render('auth/recuperarCuenta', {
-        paginaRecuperarCuenta: 'Recuperar mi cuenta',
-    });
-};
-
 // Controlador para registrar un usuario nuevo
 const registrar = async (req, res) => {
-    await check('nombre').notEmpty().withMessage('El campo nombre es obligatorio').run(req);
-    await check('email').isEmail().withMessage('El email debe ser un email válido').run(req);
-    await check('password').isLength({ min: 4 }).withMessage('La contraseña debe tener al menos 4 caracteres').run(req);
-    await check('repetirPassword').custom((value, { req }) => value === req.body.password)
-        .withMessage('Las contraseñas no coinciden').run(req);
+    await check('nombre')
+        .notEmpty()
+        .withMessage('El campo nombre es obligatorio')
+        .run(req);
+
+    await check('email')
+        .isEmail()
+        .withMessage('El email debe ser un email válido')
+        .run(req);
+
+    await check('password')
+        .isLength({ min: 4 })
+        .withMessage('La contraseña debe tener al menos 4 caracteres')
+        .run(req);
+
+    await check('repetirPassword')
+        .custom((value, { req }) => value === req.body.password)
+        .withMessage('Las contraseñas no coinciden')
+        .run(req);
+
 
     const resultados = validationResult(req);
     if (!resultados.isEmpty()) {
@@ -103,6 +73,7 @@ const registrar = async (req, res) => {
         });
     }
 
+    // Verificar si el usuario ya existe
     const existingUser = await User.findOne({ where: { email: req.body.email } });
     if (existingUser) {
         return res.render('auth/registro', {
@@ -115,12 +86,11 @@ const registrar = async (req, res) => {
         });
     }
 
-    const { nombre, email, password} = req.body;
-    const generandoId = () => {
-        return uuidv4(); 
-    };
-    const token = generandoId(); // Genera el token aquí.
+    const { nombre, email, password } = req.body;
+    const token = uuidv4();
+
     try {
+        // Encriptar la contraseña y crear el usuario
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = await User.create({
             name: nombre,
@@ -129,16 +99,18 @@ const registrar = async (req, res) => {
             token,
         });
 
+        // Enviar correo de confirmación
         emailRegistro({
             nombre: user.name,
             email: user.email,
-            token: user.token, 
+            token: user.token,
         });
+
         console.log('Token generado:', user.token);
 
         return res.render('templates/message', {
             pagina: 'Cuenta creada',
-            message: 'Te hemos enviado un correo con las instrucciones para que confirmes tu cuenta'
+            message: 'Te hemos enviado un correo con las instrucciones para que confirmes tu cuenta',
         });
     } catch (error) {
         console.error('Error al crear el usuario:', error);
@@ -147,6 +119,31 @@ const registrar = async (req, res) => {
             errores: [{ msg: 'Hubo un error al crear el usuario' }],
         });
     }
+};
+
+// Controladores adicionales
+const inicio = (req, res) => {
+    res.render('layout/index', {
+        autenticado: false,
+    });
+};
+
+const formLogin = (req, res) => {
+    res.render('auth/login', {
+        paginaLogin: 'Iniciar sesión',
+    });
+};
+
+const formRegistro = (req, res) => {
+    res.render('auth/registro', {
+        pagina: 'Crear cuenta',
+    });
+};
+
+const recuperarCuenta = (req, res) => {
+    res.render('auth/recuperarCuenta', {
+        paginaRecuperarCuenta: 'Recuperar mi cuenta',
+    });
 };
 
 // Exportar los controladores

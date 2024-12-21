@@ -12,14 +12,18 @@ const User = sequelize.define(
         email: {
             type: DataTypes.STRING,
             allowNull: false,
-            unique: true, 
+            unique: true,
             validate: {
-                isEmail: true, 
+                isEmail: true,
             },
         },
         password: {
             type: DataTypes.STRING,
             allowNull: false,
+        },
+        token: { 
+            type: DataTypes.STRING,
+            allowNull: true, 
         },
     },
     {
