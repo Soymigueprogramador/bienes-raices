@@ -1,3 +1,4 @@
+
 import { check, validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
 import User from '../models/User.model.js';
@@ -23,17 +24,15 @@ const comprobar = async (req, res) => {
         user.confirmado = true;
         await user.save();
 
-        return res.render('auth/cuentaConfirmada', {
+        return res.render('auth/cuenta-confirmada', {
             pagina: 'Cuenta confirmada',
             message: '¡Cuenta confirmada exitosamente!',
-            error: false,
         });
     } catch (error) {
         console.error('Error al comprobar la cuenta:', error);
         return res.status(500).render('auth/cuentaConfirmada', {
             pagina: 'Error al confirmar tu cuenta',
             message: 'Ocurrió un error inesperado. Por favor, intenta más tarde.',
-            error: true,
         });
     }
 };
