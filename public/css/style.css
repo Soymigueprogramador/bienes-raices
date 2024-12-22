@@ -2,7 +2,7 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #f9fafb;
+    background-color: #f0fafb;
     margin: 0;
     padding: 0;
     min-height: 100vh;
@@ -133,11 +133,6 @@ input.submit:hover {
     margin: 2.5rem 0; 
 }
 
-.subtitulo {
-    text-align: center;
-    color: #000;
-}
-
 /* Mensajes de confirmacion de cuenta. */
 .mostrar-mensaje-confirmacion {
     background-color: white;
@@ -160,4 +155,16 @@ input.submit:hover {
 
 .bg-green-500 {
     background-color: #48bb78;
+}
+
+/* Estilos que se muestran en la pagina que confirma la creacion de la cuenta. */
+.vamos-login {
+    text-align: center;
+    font-weight: bold;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: #2563eb;
+    text-transform: uppercase;
+    margin-top: 2.5rem;
+    display: block;
 }

@@ -12,3 +12,6 @@ block contenido
       p.mensaje-confirmacion.bg-red-500= message
     else
       p.mensaje-confirmacion.bg-green-500= message
+
+    if  !error
+      a.vamos-login(href="/login") ¡Ya podés iniciar sesión!

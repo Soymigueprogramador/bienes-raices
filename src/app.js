@@ -6,7 +6,6 @@ import userRouter from './routes/user.router.js';
 import db from './config/db.js';
 import dotenv from 'dotenv';
 
-
 // Configurando constantes para el servidor
 const nameProyect = process.env.NAME_PROYECT
 const app = express();

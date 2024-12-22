@@ -7,11 +7,11 @@ const User = sequelize.define(
     {
         name: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: false, // Campo obligatorio
         },
         email: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: false, 
             unique: true,
             validate: {
                 isEmail: true,
@@ -19,16 +19,21 @@ const User = sequelize.define(
         },
         password: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: false, // Campo obligatorio
         },
         token: { 
             type: DataTypes.STRING,
             allowNull: true, 
         },
+        confirmado: { 
+            type: DataTypes.BOOLEAN,
+            defaultValue: false, 
+            allowNull: false, 
+        },
     },
     {
         hooks: {
-            // Hook para encriptar la contraseña antes de crear el usuario.
+            // Hook para encriptar la contraseña antes de guardar un nuevo usuario
             beforeCreate: async (user) => {
                 const salt = await bcrypt.genSalt(10);
                 user.password = await bcrypt.hash(user.password, salt);
