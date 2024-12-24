@@ -6,12 +6,17 @@ block contenido
       span.rices Rices
     h2.subtitulo #{paginaRecuperarCuenta}
 
+  if errores
+    .errores
+      each error in errores
+        p.mostrar-errores= error.msg
+
   .formulario
     .form-container
-      form(action="#")
+      form(method="POST" action="/auth/cambiarContrasena")
         .form-group
           label(for="email") Email
-          input#email.input-text(type="email" name="email" placeholder="Ingresa tu email")
-        input.submit(type="submit" value="Iniciar sesión")
-        p.crear-cuenta Recupera tu cuenta para iniciar sesión
+          input#email.input-text(type="email" name="email" placeholder="Ingresa tu email" required)
+        input.submit(type="submit" value="Recuperar contraseña")
+        p.crear-cuenta ¿Ya tienes cuenta?
           a.enlace(href="/login") Iniciar sesión

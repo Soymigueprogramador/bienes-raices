@@ -1,5 +1,16 @@
 import express from 'express';
-import { formLogin, formRegistro, inicio, recuperarCuenta, registrar, comprobar } from '../controllers/user.controller.js';
+import {
+    formLogin,
+    formRegistro,
+    inicio,
+    recuperarCuenta,
+    registrar,
+    comprobar,
+    cambiarContraseña,
+    comprobarToken,
+    nuevoPassword,
+} from '../controllers/user.controller.js';
+i
 
 const router = express.Router();
 
@@ -15,6 +26,11 @@ router.post('/auth/registro', registrar);
 router.get('/auth/cuentaConfirmada/:token', comprobar);
 
 // Recuperar cuenta
-router.get('/recuperar-cuenta', recuperarCuenta);
+router.get('/recuperarCuenta', recuperarCuenta);
+router.post('/auth/cambiarContrasena', cambiarContraseña);
+
+// Ruta para almacenar el nuevo password. 
+router.get('/recuperarCuenta/:token', comprobarToken);
+router.post('/recuperarCuenta/:token', nuevoPassword);
 
 export default router;
