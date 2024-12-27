@@ -76,64 +76,8 @@ const sendTestEmail = async () => {
 };
 
 // Función para enviar correo de confirmación de cuenta para recuperación
-const emailRecuperarCuenta = async (datos) => {
-    const { nombre, email, token, } = datos;
-    const transport = createTransport(); // Crear el transporte según configuración
 
-    try {
-        const info = await transport.sendMail({
-            from: '"Bienes Raíces" <no-reply@bienesraices.com>', // Remitente
-            to: email, // Destinatario
-            subject: 'Confirma tu cuenta en bienes_raices.com',
-            text: 'Confirma tu cuenta en bienes_raices.com',
-            html: `
-                <p>Hola ${nombre}, necesitamos que confirmes tu cuenta en Bienes Raíces.</p>
-                <p>Puedes confirmar tu cuenta desde este enlace: 
-                    <a href="${process.env.BACKEND_URL}:${process.env.PORT ?? 8080}/auth/cuentaConfirmada/${token}">Confirmar Cuenta</a>
-                </p>
-                <p>Si no creaste esta cuenta, puedes ignorar este mensaje. Lamentamos las molestias.</p>
-            `,
-        });
-
-        console.log('Correo de confirmación enviado a:', email);
-
-        // Si es Ethereal, muestra la URL del correo en consola
-        if (process.env.EMAIL_HOST === 'smtp.ethereal.email') {
-            console.log('URL para visualizar el correo:', nodemailer.getTestMessageUrl(info));
-        }
-    } catch (error) {
-        console.error('Error al enviar el correo a23f5:', error.message);
-    }
-};
-
-// Función para enviar correo de prueba para recuperación de cuenta
-const sendTestEmailRecuperarCuenta = async () => {
-    const transport = createTransport(); // Crear el transporte según configuración
-
-    try {
-        const info = await transport.sendMail({
-            from: '"Prueba" <test@miapp.com>', // Remitente
-            to: 'destinatario@ejemplo.com',   // Destinatario
-            subject: 'Correo de prueba desde Ethereal',
-            text: 'Este es un correo de prueba.',
-            html: '<p>Este es un correo de <strong>prueba</strong>.</p>',
-        });
-
-        console.log('Correo enviado:', info.messageId);
-
-        // Si es Ethereal, muestra la URL del correo en consola
-        if (process.env.EMAIL_HOST === 'smtp.ethereal.email') {
-            console.log('URL para visualizar el correo:', nodemailer.getTestMessageUrl(info));
-        }
-    } catch (error) {
-        console.error('Error al enviar el correo:', error);
-    }
-};
-
-// Exportando las funciones
 export {
     emailRegistro,
     sendTestEmail,
-    sendTestEmailRecuperarCuenta,
-    emailRecuperarCuenta, // Asegúrate de exportar la función correcta
 };

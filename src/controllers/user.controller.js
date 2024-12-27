@@ -1,12 +1,7 @@
 import { check, validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
 import User from '../models/User.model.js';
-import { 
-    emailRegistro,
-    sendTestEmail,
-    sendTestEmailRecuperarCuenta,
-    emailRecuperarCuenta
- } from '../helpers/emails.js';
+import { emailRegistro } from '../helpers/emails.js';
 import { v4 as uuidv4 } from 'uuid';
 
 // Controlador para confirmar la cuenta
@@ -26,7 +21,7 @@ const comprobar = async (req, res) => {
         user.confirmado = true;
         await user.save();
 
-        return res.render('auth/cuenta-confirmada', {
+        return res.render('auth/cuentaConfirmada', {
             pagina: 'Cuenta confirmada',
             message: '¡Cuenta confirmada exitosamente!',
         });
@@ -104,8 +99,6 @@ const registrar = async (req, res) => {
             token: user.token,
         });
 
-        console.log('Token generado:', user.token);
-
         return res.render('templates/message', {
             pagina: 'Cuenta creada',
             message: 'Te hemos enviado un correo con las instrucciones para que confirmes tu cuenta',
@@ -120,7 +113,6 @@ const registrar = async (req, res) => {
 };
 
 // Otros controladores
-
 const inicio = (req, res) => {
     res.render('layout/index', {
         autenticado: false,
@@ -141,122 +133,15 @@ const formRegistro = (req, res) => {
 
 const recuperarCuenta = (req, res) => {
     res.render('auth/recuperarCuenta', {
-        pagina: 'Recuperar mi cuenta',
+        pagina: 'Recuperar cuenta',
     });
 };
-
-// Cambiar contraseña.
-/*const cambiarContraseña = async (req, res) => {
-    await check('email')
-        .isEmail()
-        .withMessage('El email debe ser un email válido')
-        .run(req);
-
-    const resultados = validationResult(req);
-
-    if (!resultados.isEmpty()) {
-        return res.render('auth/recuperarCuenta', {
-            errores: resultados.array(),
-            paginaRecuperarCuenta: 'Recuperar Cuenta',
-        });
-    }
-
-    const { email } = req.body;
-
-    const user = await User.findOne({ where: { email } });
-
-    if (!user) {
-        return res.render('auth/recuperarCuenta', {
-            errores: [{ msg: 'El correo electrónico no está registrado' }],
-        });
-    }
-
-    // Crear un token para recuperar cuenta
-    const token = uuidv4();
-    user.token = token;
-    await user.save();
-
-    // Enviar correo para recuperar cuenta
-    await recuperarCuentaEmail({
-        email,
-        nombre: user.name,
-        token: user.token,
-    });
-
-    return res.render('templates/message', {
-        pagina: 'Recupera tu cuenta',
-        message: 'Te hemos enviado un correo con las instrucciones para que recuperes tu cuenta',
-    });
-};
-
-// Comprobando el token.
-const comprobarToken = async (req, res) => {
-    const { token } = req.params;
-
-    try {
-        const user = await User.findOne({ where: { token } });
-
-        if (!user) {
-            return res.render('auth/recuperarCuenta', {
-                pagina: 'Recuperar Cuenta',
-                errores: [{ msg: 'El token no es válido o ha expirado' }],
-            });
-        }
-
-        res.render('auth/nuevoPassword', {
-            pagina: 'Nueva Contraseña',
-            token,
-        });
-    } catch (error) {
-        console.error('Error al comprobar el token:', error);
-        res.status(500).render('templates/message', {
-            pagina: 'Error',
-            message: 'Ocurrió un error al procesar tu solicitud',
-        });
-    }
-};
-
-// Almacenando el nuevo password.
-const nuevoPassword = async (req, res) => {
-    const { token } = req.params;
-    const { password } = req.body;
-
-    try {
-        const user = await User.findOne({ where: { token } });
-
-        if (!user) {
-            return res.render('auth/recuperarCuenta', {
-                pagina: 'Recuperar Cuenta',
-                errores: [{ msg: 'El token no es válido o ha expirado' }],
-            });
-        }
-
-        // Actualizar la contraseña
-        user.password = await bcrypt.hash(password, 10);
-        user.token = null; // Eliminar el token después de usarlo
-        await user.save();
-
-        res.render('templates/message', {
-            pagina: 'Contraseña Actualizada',
-            message: 'Tu contraseña ha sido actualizada exitosamente',
-        });
-    } catch (error) {
-        console.error('Error al actualizar la contraseña:', error);
-        res.status(500).render('templates/message', {
-            pagina: 'Error',
-            message: 'Ocurrió un error al procesar tu solicitud',
-        });
-    }
-};*/
 
 export {
     inicio,
     formLogin,
     formRegistro,
-    emailRecuperarCuenta,
     registrar,
     comprobar,
-    //cambiarContraseña,
-    //nuevoPassword,
-    //comprobarToken,
+    recuperarCuenta,
 };
