@@ -35,6 +35,6 @@ try {
 }
 
 // Iniciando el servidor
-app.listen(port, () => {
-  console.log(`Bienvenidos a "${nameProyect}", los esperamos en el puerto ${process.env.PORT}`);
+app.listen(8080, () => {
+  console.log('Servidor corriendo en http://localhost:8080');
 });

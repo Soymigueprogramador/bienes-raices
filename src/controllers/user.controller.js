@@ -1,15 +1,18 @@
 import { check, validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
 import User from '../models/User.model.js';
-import { emailRegistro, sendTestEmail, sendTestEmailRecuperarCuenta, recuperarCuenta, } from '../helpers/emails.js';
+import { 
+    emailRegistro,
+    sendTestEmail,
+    sendTestEmailRecuperarCuenta,
+    emailRecuperarCuenta
+ } from '../helpers/emails.js';
 import { v4 as uuidv4 } from 'uuid';
-import { where } from 'sequelize';
 
 // Controlador para confirmar la cuenta
 const comprobar = async (req, res) => {
     const { token } = req.params;
     try {
-        // Verificando si el token es válido
         const user = await User.findOne({ where: { token } });
         if (!user) {
             return res.status(404).render('auth/cuentaConfirmada', {
@@ -19,7 +22,6 @@ const comprobar = async (req, res) => {
             });
         }
 
-        // Si el usuario existe, confirmamos su cuenta
         user.token = null;
         user.confirmado = true;
         await user.save();
@@ -59,7 +61,6 @@ const registrar = async (req, res) => {
         .withMessage('Las contraseñas no coinciden')
         .run(req);
 
-
     const resultados = validationResult(req);
     if (!resultados.isEmpty()) {
         return res.render('auth/registro', {
@@ -72,7 +73,6 @@ const registrar = async (req, res) => {
         });
     }
 
-    // Verificar si el usuario ya existe
     const existingUser = await User.findOne({ where: { email: req.body.email } });
     if (existingUser) {
         return res.render('auth/registro', {
@@ -89,7 +89,6 @@ const registrar = async (req, res) => {
     const token = uuidv4();
 
     try {
-        // Encriptar la contraseña y crear el usuario
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = await User.create({
             name: nombre,
@@ -99,7 +98,7 @@ const registrar = async (req, res) => {
         });
 
         // Enviar correo de confirmación
-        emailRegistro({
+        await emailRegistro({
             nombre: user.name,
             email: user.email,
             token: user.token,
@@ -120,7 +119,8 @@ const registrar = async (req, res) => {
     }
 };
 
-// Controladores adicionales
+// Otros controladores
+
 const inicio = (req, res) => {
     res.render('layout/index', {
         autenticado: false,
@@ -141,12 +141,12 @@ const formRegistro = (req, res) => {
 
 const recuperarCuenta = (req, res) => {
     res.render('auth/recuperarCuenta', {
-        paginaRecuperarCuenta: 'Recuperar mi cuenta',
+        pagina: 'Recuperar mi cuenta',
     });
 };
 
-// Cambiar contraseña. 
-const cambiarContraseña = async (req, res) => {
+// Cambiar contraseña.
+/*const cambiarContraseña = async (req, res) => {
     await check('email')
         .isEmail()
         .withMessage('El email debe ser un email válido')
@@ -154,7 +154,6 @@ const cambiarContraseña = async (req, res) => {
 
     const resultados = validationResult(req);
 
-    // Si hay errores en la validación, renderizar con errores
     if (!resultados.isEmpty()) {
         return res.render('auth/recuperarCuenta', {
             errores: resultados.array(),
@@ -162,7 +161,6 @@ const cambiarContraseña = async (req, res) => {
         });
     }
 
-    // Buscar un usuario en la base de datos. 
     const { email } = req.body;
 
     const user = await User.findOne({ where: { email } });
@@ -173,95 +171,92 @@ const cambiarContraseña = async (req, res) => {
         });
     }
 
-    // Creando un token para que el usuario recupere su cuenta.
-    user.token = generarId();
-    await User.save();
+    // Crear un token para recuperar cuenta
+    const token = uuidv4();
+    user.token = token;
+    await user.save();
 
-    // Le enviamos un email con las intrucciones. 
-    recuperarCuenta({
+    // Enviar correo para recuperar cuenta
+    await recuperarCuentaEmail({
         email,
-        nombre: user.nombre,
-        token: user.token
+        nombre: user.name,
+        token: user.token,
     });
 
-    // Le mostramos un mensaje al usuario.
     return res.render('templates/message', {
         pagina: 'Recupera tu cuenta',
         message: 'Te hemos enviado un correo con las instrucciones para que recuperes tu cuenta',
     });
-
-    // Comprobando el token.
-    const comprobarToken = async (req, res) => {
-        const { token } = req.params;
-
-        try {
-            const user = await User.findOne({ where: { token } });
-
-            if (!user) {
-                return res.render('auth/recuperarCuenta', {
-                    pagina: 'Recuperar Cuenta',
-                    errores: [{ msg: 'El token no es válido o ha expirado' }],
-                });
-            }
-
-            res.render('auth/nuevoPassword', {
-                pagina: 'Nueva Contraseña',
-                token,
-            });
-        } catch (error) {
-            console.error('Error al comprobar el token:', error);
-            res.status(500).render('templates/message', {
-                pagina: 'Error',
-                message: 'Ocurrió un error al procesar tu solicitud',
-            });
-        }
-    };
-
-
-    // Almacenando el nuevo password. 
-    const nuevoPassword = async (req, res) => {
-        const { token } = req.params;
-        const { password } = req.body;
-
-        try {
-            const user = await User.findOne({ where: { token } });
-
-            if (!user) {
-                return res.render('auth/recuperarCuenta', {
-                    pagina: 'Recuperar Cuenta',
-                    errores: [{ msg: 'El token no es válido o ha expirado' }],
-                });
-            }
-
-            // Actualizar la contraseña
-            user.password = await bcrypt.hash(password, 10);
-            user.token = null; // Eliminar el token después de usarlo
-            await user.save();
-
-            res.render('templates/message', {
-                pagina: 'Contraseña Actualizada',
-                message: 'Tu contraseña ha sido actualizada exitosamente',
-            });
-        } catch (error) {
-            console.error('Error al actualizar la contraseña:', error);
-            res.status(500).render('templates/message', {
-                pagina: 'Error',
-                message: 'Ocurrió un error al procesar tu solicitud',
-            });
-        }
-    };
 };
 
+// Comprobando el token.
+const comprobarToken = async (req, res) => {
+    const { token } = req.params;
 
-// Exportar los controladores.
+    try {
+        const user = await User.findOne({ where: { token } });
+
+        if (!user) {
+            return res.render('auth/recuperarCuenta', {
+                pagina: 'Recuperar Cuenta',
+                errores: [{ msg: 'El token no es válido o ha expirado' }],
+            });
+        }
+
+        res.render('auth/nuevoPassword', {
+            pagina: 'Nueva Contraseña',
+            token,
+        });
+    } catch (error) {
+        console.error('Error al comprobar el token:', error);
+        res.status(500).render('templates/message', {
+            pagina: 'Error',
+            message: 'Ocurrió un error al procesar tu solicitud',
+        });
+    }
+};
+
+// Almacenando el nuevo password.
+const nuevoPassword = async (req, res) => {
+    const { token } = req.params;
+    const { password } = req.body;
+
+    try {
+        const user = await User.findOne({ where: { token } });
+
+        if (!user) {
+            return res.render('auth/recuperarCuenta', {
+                pagina: 'Recuperar Cuenta',
+                errores: [{ msg: 'El token no es válido o ha expirado' }],
+            });
+        }
+
+        // Actualizar la contraseña
+        user.password = await bcrypt.hash(password, 10);
+        user.token = null; // Eliminar el token después de usarlo
+        await user.save();
+
+        res.render('templates/message', {
+            pagina: 'Contraseña Actualizada',
+            message: 'Tu contraseña ha sido actualizada exitosamente',
+        });
+    } catch (error) {
+        console.error('Error al actualizar la contraseña:', error);
+        res.status(500).render('templates/message', {
+            pagina: 'Error',
+            message: 'Ocurrió un error al procesar tu solicitud',
+        });
+    }
+};*/
+
 export {
     inicio,
     formLogin,
     formRegistro,
-    //recuperarCuenta,
+    emailRecuperarCuenta,
     registrar,
     comprobar,
-    cambiarContraseña,
-    nuevoPassword,
-    comprobarToken,
+    //cambiarContraseña,
+    //nuevoPassword,
+    //comprobarToken,
 };

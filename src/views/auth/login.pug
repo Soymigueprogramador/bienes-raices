@@ -4,7 +4,7 @@ block contenido
   .titulo
     h1.bienvenida Bienes
       span.rices Rices
-    h2.subtitulo #{paginaLogin}
+    h2.subtitulo #{paginaLogin}  // Página dinámica para el título
 
   .formulario
     .form-container
@@ -19,10 +19,10 @@ block contenido
           label(for="password") Contraseña
           input#password.input-text(type="password" name="password" placeholder="Ingresa tu contraseña")
 
-        input.submit(type="submit" value="Iniciar sesion")
+        input.submit(type="submit" value="Iniciar sesión")
 
-        p.crear-cuenta ¿No tenes cuenta?
-          a.enlace(href="registro") Registrate ahora
+        p.crear-cuenta ¿No tienes cuenta?
+          a.enlace(href="registro") Regístrate ahora
 
         p.crear-cuenta ¿Olvidaste tu contraseña?
-          a.enlace(href="recuperarCuenta") Recuperar cuenta
+          a.enlace(href="/recuperarCuenta") Recuperar cuenta  

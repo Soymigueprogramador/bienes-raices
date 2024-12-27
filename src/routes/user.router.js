@@ -3,14 +3,13 @@ import {
     formLogin,
     formRegistro,
     inicio,
-    recuperarCuenta,
+    emailRecuperarCuenta,
     registrar,
     comprobar,
-    cambiarContraseña,
-    comprobarToken,
-    nuevoPassword,
+    //cambiarContraseña,
+    //comprobarToken,
+    //nuevoPassword,
 } from '../controllers/user.controller.js';
-i
 
 const router = express.Router();
 
@@ -26,11 +25,11 @@ router.post('/auth/registro', registrar);
 router.get('/auth/cuentaConfirmada/:token', comprobar);
 
 // Recuperar cuenta
-router.get('/recuperarCuenta', recuperarCuenta);
-router.post('/auth/cambiarContrasena', cambiarContraseña);
+router.get('/recuperarCuenta', emailRecuperarCuenta);  // Aquí se renderiza la página para ingresar email
+//router.post('/auth/cambiarContrasena', cambiarContraseña);  // Aquí se maneja la solicitud de cambio de contraseña
 
-// Ruta para almacenar el nuevo password. 
-router.get('/recuperarCuenta/:token', comprobarToken);
-router.post('/recuperarCuenta/:token', nuevoPassword);
+// Ruta para comprobar el token y mostrar la vista para cambiar la contraseña
+//router.get('/recuperarCuenta/:token', comprobarToken);  // Verificación del token
+//router.post('/recuperarCuenta/:token', nuevoPassword);  // Enviar nueva contraseña al servidor
 
 export default router;

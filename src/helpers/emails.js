@@ -32,7 +32,7 @@ const emailRegistro = async (datos) => {
             subject: 'Recupera tu cuenta en bienes_raices.com',
             text: 'Recupera tu cuenta en bienes_raices.com',
             html: `
-                <p>Hola ${nombre}, Te madamos este email para que puedas recuperar tu cuenta.</p>
+                <p>Hola ${nombre}, Te mandamos este email para que puedas recuperar tu cuenta.</p>
                 <p>Puedes recuperar tu cuenta desde este enlace: 
                     <a href="${process.env.BACKEND_URL}:${process.env.PORT ?? 8080}/auth/recuperarCuenta/${token}">Recuperar cuenta</a>
                 </p>
@@ -75,21 +75,7 @@ const sendTestEmail = async () => {
     }
 };
 
-// Funcion para que el usuario recupere se cuenta mediante el email.
-const recuperarCuenta = () => {
-    const isEthereal = process.env.EMAIL_HOST === 'smtp.ethereal.email'; // Detecta si es Ethereal
-
-    return nodemailer.createTransport({
-        host: process.env.EMAIL_HOST,
-        port: Number(process.env.EMAIL_PORT) || 587, // Asegura que el puerto sea un número
-        auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS,
-        },
-    });
-};
-
-// Función para enviar correo de confirmación de cuenta
+// Función para enviar correo de confirmación de cuenta para recuperación
 const emailRecuperarCuenta = async (datos) => {
     const { nombre, email, token, } = datos;
     const transport = createTransport(); // Crear el transporte según configuración
@@ -116,11 +102,11 @@ const emailRecuperarCuenta = async (datos) => {
             console.log('URL para visualizar el correo:', nodemailer.getTestMessageUrl(info));
         }
     } catch (error) {
-        console.error('Error al enviar el correo:', error.message);
+        console.error('Error al enviar el correo a23f5:', error.message);
     }
 };
 
-// Función para enviar correo de prueba
+// Función para enviar correo de prueba para recuperación de cuenta
 const sendTestEmailRecuperarCuenta = async () => {
     const transport = createTransport(); // Crear el transporte según configuración
 
@@ -149,5 +135,5 @@ export {
     emailRegistro,
     sendTestEmail,
     sendTestEmailRecuperarCuenta,
-    recuperarCuenta,
+    emailRecuperarCuenta, // Asegúrate de exportar la función correcta
 };
