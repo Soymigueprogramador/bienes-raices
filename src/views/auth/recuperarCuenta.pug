@@ -9,11 +9,11 @@ block contenido
   if errores
     .errores
       each error in errores
-        p.mostrar-errores= error.msg
+        p.mostrar-errores= error
 
   .formulario
     .form-container
-      form(method="POST" action="/auth/recuperarCuenta")
+      form(method="POST" action="/auth/resetearContraseña" noValidate)
         .form-group
           label(for="email") Email
           input#email.input-text(type="email" name="email" placeholder="Ingresa tu email" required)

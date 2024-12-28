@@ -6,6 +6,7 @@ import {
     registrar,
     comprobar,
     recuperarCuenta,
+    resetearContraseña
 } from '../controllers/user.controller.js';
 
 const router = express.Router();
@@ -23,5 +24,6 @@ router.get('/auth/cuentaConfirmada/:token', comprobar);
 
 // Recuperar cuenta 
 router.get('/recuperarCuenta', recuperarCuenta);
+router.post('/recuperarCuenta', resetearContraseña);
 
 export default router;

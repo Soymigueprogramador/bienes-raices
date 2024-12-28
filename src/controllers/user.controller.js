@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import User from '../models/User.model.js';
 import { emailRegistro } from '../helpers/emails.js';
 import { v4 as uuidv4 } from 'uuid';
+import { where } from 'sequelize';
 
 // Controlador para confirmar la cuenta
 const comprobar = async (req, res) => {
@@ -137,6 +138,35 @@ const recuperarCuenta = (req, res) => {
     });
 };
 
+// Funcion para recuperar la contraseña.
+const resetearContraseña = async ( req, res ) => {
+    await check('email')
+        .isEmail()
+        .withMessage('El email debe ser un email válido')
+        .run(req);
+
+        const resultados = validationResult(req);
+        
+        if (!resultados.isEmpty()) {
+            return res.render('auth/recuperarCuenta', {
+                pagina: 'Recuperar cuenta',
+                errores: resultados.array()
+            });
+        };
+
+    // Buscando si el usuario existe en la base de datos. 
+    const { email } = req.body;
+
+    const user = await User.findOne({ where: { email }});
+
+    if( !user ) {
+        return res.render('auth/recuperarCuenta', {
+            pagina: 'Recuperar cuenta',
+            errores: [{ msg: 'Este email no está registrado' }]
+        });
+    }
+};
+
 export {
     inicio,
     formLogin,
@@ -144,4 +174,5 @@ export {
     registrar,
     comprobar,
     recuperarCuenta,
+    resetearContraseña
 };
