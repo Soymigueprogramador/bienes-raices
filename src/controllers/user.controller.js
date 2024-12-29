@@ -2,7 +2,12 @@
 import { check, validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
 import User from '../models/User.model.js';
-import { emailRegistro } from '../helpers/emails.js';
+import { 
+    emailRegistro,
+    sendTestEmail,
+    olvidePassword,
+    sendTestEmailPassword
+} from '../helpers/emails.js';
 import { v4 as uuidv4 } from 'uuid';
 import { where } from 'sequelize';
 
@@ -166,7 +171,47 @@ const resetearContraseña = async ( req, res ) => {
             pagina: 'Recuperar cuenta',
             errores: [{ msg: 'Este email no está registrado' }]
         });
+    };
+
+    // Vamos a generar un token.
+    const generarId = () => uuidv4();
+    User.token = generarId(); 
+    await user.save(); 
+
+    // Enviamos el email.
+    olvidePassword({
+        email: user.email,
+        nombre: user.nombre,
+        token: user.token,
+    });
+
+    // Mostramos un mensaje para el usuario.
+    return res.render('templates/message', {
+        pagina: 'Recupera tu contraseña',
+        message: 'Te hemos enviado un correo con las instrucciones para que recuperes tu cuenta',
+    });
+};
+
+// Comprobacion del token del usuario que quiere cambiar su contraseña.
+const comprobarToken = async ( req, res, ) => {
+    const { token } = req.params; 
+    const user = await User.findOne({ where: { token } });
+
+    if (!user) {
+        return res.status(404).render('auth/recuperarCuenta', {
+            pagina: 'Recupera tu contraseña',
+            message: 'Ocurrio un error al validar tus datos.',
+            error: true,
+        });
     }
+
+    // Mostramos un formulario para modificar la constraseña. 
+    
+};
+
+// Guardando la nueva contraseña. 
+const nuevoPassword = ( req, res  ) => {
+
 };
 
 export {
@@ -176,5 +221,7 @@ export {
     registrar,
     comprobar,
     recuperarCuenta,
-    resetearContraseña
+    resetearContraseña,
+    comprobarToken,
+    nuevoPassword,
 };

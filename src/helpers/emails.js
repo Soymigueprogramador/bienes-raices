@@ -36,7 +36,7 @@ const emailRegistro = async (datos) => {
                 <p>Puedes recuperar tu cuenta desde este enlace: 
                     <a href="${process.env.BACKEND_URL}:${process.env.PORT ?? 8080}/auth/cuenta-confirmada/${token}"> Confirmar cuenta </a>
                 </p>
-                <p>Si no necesitas recuperar esta cuenta, puedes ignorar este mensaje. Lamentamos las molestias.</p>
+                <p>Si no te registraste en nuestra pagina web, puedes ignorar este mensaje. Lamentamos las molestias.</p>
             `,
         });
 
@@ -59,6 +59,73 @@ const sendTestEmail = async () => {
         const info = await transport.sendMail({
             from: '"Prueba" <test@miapp.com>', // Remitente
             to: 'destinatario@ejemplo.com',   // Destinatario
+            subject: 'Confirmar mi cuenta',
+            text: 'Confirmar mi cuenta.',
+            html: '<p>Este es un correo de <strong>prueba</strong>.</p>',
+        });
+
+        console.log('Correo enviado:', info.messageId);
+
+        // Si es Ethereal, muestra la URL del correo en consola
+        if (process.env.EMAIL_HOST === 'smtp.ethereal.email') {
+            console.log('URL para visualizar el correo:', nodemailer.getTestMessageUrl(info));
+        }
+    } catch (error) {
+        console.error('Error al enviar el correo:', error);
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Función para enviar correo con instrucciones para recuperar la cuenta.
+const olvidePassword = async (datos) => {
+    const { nombre, email, token, } = datos;
+    const transport = createTransport(); // Crear el transporte según configuración
+
+    try {
+        const info = await transport.sendMail({
+            from: '"Bienes Raíces" <no-reply@bienesraices.com>', // Remitente
+            to: email, 
+            subject: 'Recupera tu cuenta en bienes_raices.com',
+            text: 'Recupera tu cuenta en bienes_raices.com',
+            html: `
+                <p>Hola ${nombre}, Te mandamos este email para que puedas recuperar la contraseña de tu cuenta.</p>
+                <p>Puedes recuperar tu cuenta desde este enlace: 
+                    <a href="${process.env.BACKEND_URL}:${process.env.PORT ?? 8080}/auth/recuperarCuenta/${token}"> Recuperar contraseña </a>
+                </p>
+                <p>Si no necesitas recuperar esta cuenta, puedes ignorar este mensaje. Lamentamos las molestias.</p>
+            `,
+        });
+
+        console.log('Correo de confirmación enviado a:', email);
+
+        // Si es Ethereal, muestra la URL del correo en consola
+        if (process.env.EMAIL_HOST === 'smtp.ethereal.email') {
+            console.log('URL para visualizar el correo:', nodemailer.getTestMessageUrl(info));
+        }
+    } catch (error) {
+        console.error('Error al enviar el correo:', error.message);
+    }
+};
+
+// Función para enviar correo de prueba
+const sendTestEmailPassword = async () => {
+    const transport = createTransport(); // Crear el transporte según configuración
+
+    try {
+        const info = await transport.sendMail({
+            from: '"Prueba" <test@miapp.com>', // Remitente
+            to: 'destinatario@ejemplo.com',   // Destinatario
             subject: 'Correo de prueba desde Ethereal',
             text: 'Este es un correo de prueba.',
             html: '<p>Este es un correo de <strong>prueba</strong>.</p>',
@@ -75,9 +142,10 @@ const sendTestEmail = async () => {
     }
 };
 
-// Función para enviar correo de confirmación de cuenta para recuperación
 
 export {
     emailRegistro,
     sendTestEmail,
+    olvidePassword,
+    sendTestEmailPassword
 };
