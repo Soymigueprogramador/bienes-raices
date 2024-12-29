@@ -20,7 +20,7 @@ router.get('/registro', formRegistro);
 router.post('/auth/registro', registrar);
 
 // Confirmar cuenta
-router.get('/auth/cuentaConfirmada/:token', comprobar);
+router.get('/auth/cuenta-confirmada/:token', comprobar);
 
 // Recuperar cuenta 
 router.get('/recuperarCuenta', recuperarCuenta);

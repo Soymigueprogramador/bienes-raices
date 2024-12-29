@@ -146,7 +146,7 @@ input.submit:hover {
 .mensaje-confirmacion {
     text-align: center;
     font-weight: 700;
-    color: white;
+    color: #000;
 }
 
 .bg-red-500 {

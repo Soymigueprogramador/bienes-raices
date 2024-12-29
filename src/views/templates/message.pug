@@ -7,3 +7,6 @@ block contenido
       span.rices Rices
     h2.subtitulo= pagina
     p.mensaje-confirmacion= message
+
+    if !errores
+      a.vamos-login(href="/") ¡Ya podés volver a la página de inicio!

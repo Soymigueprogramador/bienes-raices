@@ -32,9 +32,9 @@ const emailRegistro = async (datos) => {
             subject: 'Recupera tu cuenta en bienes_raices.com',
             text: 'Recupera tu cuenta en bienes_raices.com',
             html: `
-                <p>Hola ${nombre}, Te mandamos este email para que puedas recuperar tu cuenta.</p>
+                <p>Hola ${nombre}, Te mandamos este email para que puedas confirmar tu cuenta.</p>
                 <p>Puedes recuperar tu cuenta desde este enlace: 
-                    <a href="${process.env.BACKEND_URL}:${process.env.PORT ?? 8080}/auth/recuperarCuenta/${token}">Recuperar cuenta</a>
+                    <a href="${process.env.BACKEND_URL}:${process.env.PORT ?? 8080}/auth/cuenta-confirmada/${token}"> Confirmar cuenta </a>
                 </p>
                 <p>Si no necesitas recuperar esta cuenta, puedes ignorar este mensaje. Lamentamos las molestias.</p>
             `,

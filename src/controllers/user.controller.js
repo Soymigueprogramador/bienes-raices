@@ -1,3 +1,4 @@
+
 import { check, validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
 import User from '../models/User.model.js';
@@ -6,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { where } from 'sequelize';
 
 // Controlador para confirmar la cuenta
-const comprobar = async (req, res) => {
+const comprobar = async (req, res) => {   
     const { token } = req.params;
     try {
         const user = await User.findOne({ where: { token } });
@@ -34,6 +35,7 @@ const comprobar = async (req, res) => {
         });
     }
 };
+
 
 // Controlador para registrar un usuario nuevo
 const registrar = async (req, res) => {
