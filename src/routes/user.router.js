@@ -31,6 +31,7 @@ router.post('/recuperarCuenta', resetearContraseña);
 
 // Guardando la nueva contraseña. 
 router.get('/auth/recuperarCuenta/:token', comprobarToken);
-router.post('/recuperarCuenta/:token', nuevoPassword);
+router.post('/auth/recuperarCuenta/:token', nuevoPassword);
+
 
 export default router;
