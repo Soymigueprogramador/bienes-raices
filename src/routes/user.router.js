@@ -1,3 +1,4 @@
+
 import express from 'express';
 import {
     formLogin,
@@ -29,7 +30,7 @@ router.get('/recuperarCuenta', recuperarCuenta);
 router.post('/recuperarCuenta', resetearContraseña);
 
 // Guardando la nueva contraseña. 
-router.get('/recuperarCuenta/:token', comprobarToken);
+router.get('/auth/recuperarCuenta/:token', comprobarToken);
 router.post('/recuperarCuenta/:token', nuevoPassword);
 
 export default router;

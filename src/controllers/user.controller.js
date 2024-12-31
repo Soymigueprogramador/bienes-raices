@@ -146,72 +146,79 @@ const recuperarCuenta = (req, res) => {
 };
 
 // Funcion para recuperar la contraseña.
-const resetearContraseña = async ( req, res ) => {
+const resetearContraseña = async (req, res) => {
     await check('email')
         .isEmail()
         .withMessage('El email debe ser un email válido')
         .run(req);
 
-        const resultados = validationResult(req);
-        
-        if (!resultados.isEmpty()) {
-            return res.render('auth/recuperarCuenta', {
-                pagina: 'Recuperar cuenta',
-                errores: resultados.array()
-            });
-        };
+    const resultados = validationResult(req);
 
-    // Buscando si el usuario existe en la base de datos. 
-    const { email } = req.body;
-
-    const user = await User.findOne({ where: { email }});
-
-    if( !user ) {
+    if (!resultados.isEmpty()) {
         return res.render('auth/recuperarCuenta', {
             pagina: 'Recuperar cuenta',
-            errores: [{ msg: 'Este email no está registrado' }]
+            errores: resultados.array(),
         });
-    };
+    }
 
-    // Vamos a generar un token.
+    const { email } = req.body;
+    const user = await User.findOne({ where: { email } });
+
+    if (!user) {
+        return res.render('auth/recuperarCuenta', {
+            pagina: 'Recuperar cuenta',
+            errores: [{ msg: 'Este email no está registrado' }],
+        });
+    }
+
     const generarId = () => uuidv4();
-    User.token = generarId(); 
-    await user.save(); 
+    user.token = generarId(); 
+    await user.save();
 
-    // Enviamos el email.
+    // Enviar correo
     olvidePassword({
         email: user.email,
-        nombre: user.nombre,
+        nombre: user.name,
         token: user.token,
     });
 
-    // Mostramos un mensaje para el usuario.
+    // Mostrar mensaje al usuario
     return res.render('templates/message', {
         pagina: 'Recupera tu contraseña',
-        message: 'Te hemos enviado un correo con las instrucciones para que recuperes tu cuenta',
+        message: 'Te hemos enviado un correo con las instrucciones para recuperar tu cuenta',
     });
 };
 
 // Comprobacion del token del usuario que quiere cambiar su contraseña.
-const comprobarToken = async ( req, res, ) => {
-    const { token } = req.params; 
-    const user = await User.findOne({ where: { token } });
+const comprobarToken = async (req, res) => {
+    const { token } = req.params;
+    try {
+        const user = await User.findOne({ where: { token } });
 
-    if (!user) {
-        return res.status(404).render('auth/recuperarCuenta', {
-            pagina: 'Recupera tu contraseña',
-            message: 'Ocurrio un error al validar tus datos.',
-            error: true,
+        if (!user) {
+            return res.render('auth/recuperarCuenta', {
+                pagina: 'Error',
+                message: 'El token no es válido o ha expirado.',
+                error: true,
+            });
+        }
+
+        res.render('auth/resetPassword', {
+            pagina: 'Restablece tu contraseña',
+            token: user.token,
+        });
+    } catch (error) {
+        console.error('Error al comprobar el token:', error);
+        return res.status(500).render('auth/recuperarCuenta', {
+            pagina: 'Error',
+            message: 'Hubo un problema al procesar tu solicitud. Intenta más tarde.',
         });
     }
-
-    // Mostramos un formulario para modificar la constraseña. 
-    
 };
 
 // Guardando la nueva contraseña. 
 const nuevoPassword = ( req, res  ) => {
-
+    console.log('Guardando el nuevo password');
 };
 
 export {
