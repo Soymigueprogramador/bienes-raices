@@ -2,17 +2,16 @@
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 
-
 // Activando las variables de entorno
 dotenv.config();
 
 // Configuración del transporte para correos
 const createTransport = () => {
-    const isEthereal = process.env.EMAIL_HOST === 'smtp.ethereal.email'; // Detecta si es Ethereal
+    const isEthereal = process.env.EMAIL_HOST === 'smtp.ethereal.email'; 
 
     return nodemailer.createTransport({
         host: process.env.EMAIL_HOST,
-        port: Number(process.env.EMAIL_PORT) || 587, // Asegura que el puerto sea un número
+        port: Number(process.env.EMAIL_PORT) || 587, 
         auth: {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASS,
@@ -23,11 +22,11 @@ const createTransport = () => {
 // Función para enviar correo de confirmación de cuenta
 const emailRegistro = async (datos) => {
     const { nombre, email, token, } = datos;
-    const transport = createTransport(); // Crear el transporte según configuración
+    const transport = createTransport(); 
 
     try {
         const info = await transport.sendMail({
-            from: '"Bienes Raíces" <no-reply@bienesraices.com>', // Remitente
+            from: '"Bienes Raíces" <no-reply@bienesraices.com>', 
             to: email, 
             subject: 'Recupera tu cuenta en bienes_raices.com',
             text: 'Recupera tu cuenta en bienes_raices.com',
@@ -53,12 +52,12 @@ const emailRegistro = async (datos) => {
 
 // Función para enviar correo de prueba
 const sendTestEmail = async () => {
-    const transport = createTransport(); // Crear el transporte según configuración
+    const transport = createTransport(); 
 
     try {
         const info = await transport.sendMail({
-            from: '"Prueba" <test@miapp.com>', // Remitente
-            to: 'destinatario@ejemplo.com',   // Destinatario
+            from: '"Prueba" <test@miapp.com>', 
+            to: 'destinatario@ejemplo.com',   
             subject: 'Confirmar mi cuenta',
             text: 'Confirmar mi cuenta.',
             html: '<p>Este es un correo de <strong>prueba</strong>.</p>',
@@ -75,26 +74,14 @@ const sendTestEmail = async () => {
     }
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
 // Función para enviar correo con instrucciones para recuperar la cuenta.
 const olvidePassword = async (datos) => {
     const { nombre, email, token, } = datos;
-    const transport = createTransport(); // Crear el transporte según configuración
+    const transport = createTransport(); 
 
     try {
         const info = await transport.sendMail({
-            from: '"Bienes Raíces" <no-reply@bienesraices.com>', // Remitente
+            from: '"Bienes Raíces" <no-reply@bienesraices.com>', 
             to: email, 
             subject: 'Recupera tu cuenta en bienes_raices.com',
             text: 'Recupera tu cuenta en bienes_raices.com',
@@ -120,12 +107,12 @@ const olvidePassword = async (datos) => {
 
 // Función para enviar correo de prueba
 const sendTestEmailPassword = async () => {
-    const transport = createTransport(); // Crear el transporte según configuración
+    const transport = createTransport(); 
 
     try {
         const info = await transport.sendMail({
-            from: '"Prueba" <test@miapp.com>', // Remitente
-            to: 'destinatario@ejemplo.com',   // Destinatario
+            from: '"Prueba" <test@miapp.com>', 
+            to: 'destinatario@ejemplo.com',   
             subject: 'Correo de prueba desde Ethereal',
             text: 'Este es un correo de prueba.',
             html: '<p>Este es un correo de <strong>prueba</strong>.</p>',
@@ -141,7 +128,6 @@ const sendTestEmailPassword = async () => {
         console.error('Error al enviar el correo:', error);
     }
 };
-
 
 export {
     emailRegistro,
