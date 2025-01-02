@@ -10,6 +10,7 @@ import {
     resetearContraseña,
     comprobarToken,
     nuevoPassword,
+    autenticar
 } from '../controllers/user.controller.js';
 
 const router = express.Router();
@@ -19,6 +20,9 @@ router.get('/', inicio);
 
 // Login y registro
 router.get('/login', formLogin);
+router.post('/auth/login', autenticar);
+
+
 router.get('/registro', formRegistro);
 router.post('/auth/registro', registrar);
 

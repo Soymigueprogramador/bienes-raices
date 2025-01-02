@@ -6,9 +6,14 @@ block contenido
       span.rices Rices
     h2.subtitulo #{paginaLogin} 
 
+  if errores
+    .errores
+      each error in errores
+        p.mostrar-errores= error.msg
+
   .formulario
     .form-container
-      form(action="#")
+      form(method="POST" action="/auth/login")
         div.form-group
 
         div.form-group

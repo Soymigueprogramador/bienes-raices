@@ -1,5 +1,9 @@
+// Importacion de dependencias necesarias.
+import jwt from 'jsonwebtoken'
+import dotenv from 'dotenv';
 
-// En este archivo vamos a generar los tokens que serán únicos para cada usuario.
+// Configurando las variables de entorno.
+dotenv.config();
 
 // Generando tokens.
 const generandoId = () => {
@@ -10,8 +14,17 @@ const generandoId = () => {
 const token = generandoId();
 //console.log(token);
 
+// Funcion para crear un JWt. 
+const generandoJWT = datos => jwt.sign({
+        id: datos.id,
+        nombre: datos.nombre,
+        email: datos.email
+    }, 
+    process.env.JWT_SECRET, 
+    { expiresIn: '1d' });
+
 // Exportando. 
 export  {
     generandoId, 
-
+    generandoJWT
 };

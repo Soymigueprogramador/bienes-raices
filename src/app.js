@@ -5,6 +5,7 @@ import { __dirname } from './util.js';
 import userRouter from './routes/user.router.js';
 import db from './config/db.js';
 import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
 
 // Configurando constantes para el servidor
 const nameProyect = process.env.NAME_PROYECT
@@ -14,6 +15,7 @@ const port = process.env.PORT || 8080;
 // Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // Configurando el motor de plantillas
 app.set('view engine', 'pug');

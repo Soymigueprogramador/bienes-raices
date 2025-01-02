@@ -7,8 +7,13 @@ import {
     olvidePassword,
     sendTestEmailPassword
 } from '../helpers/emails.js';
+import {
+    generandoId, 
+    generandoJWT
+} from '../helpers/tokend.js'
 import { v4 as uuidv4 } from 'uuid';
-import { where } from 'sequelize';
+import jwt from 'jsonwebtoken';
+import cookieParser from 'cookie-parser';
 
 // Controlador para confirmar la cuenta
 const comprobar = async (req, res) => {   
@@ -64,6 +69,7 @@ const registrar = async (req, res) => {
         .run(req);
 
     const resultados = validationResult(req);
+    
     if (!resultados.isEmpty()) {
         return res.render('auth/registro', {
             pagina: 'Crear cuenta',
@@ -132,11 +138,80 @@ const formLogin = (req, res) => {
     });
 };
 
+// Autenticando los usuarios en el login.
+const autenticar = async ( req, res ) => {
+    // Validacion de email y password. 
+    await check('email')
+        .isEmail()
+        .withMessage('El email debe ser un email válido')
+        .run(req);
+
+    await check('password')
+        .notEmpty()
+        .withMessage('La contraseña debe la misma que definiste al registrarte')
+        .run(req);
+
+        const resultados = validationResult(req);
+    
+        if (!resultados.isEmpty()) {
+            return res.render('auth/login', {
+                pagina: 'Iniciar sesion',
+                errores: resultados.array(),
+                
+            });
+        }
+
+    // comprobando si el usuario existe.
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ where: { email } });
+
+    if ( !user ) {
+        return res.render('auth/login', {
+            pagina: 'Iniciar sesion',
+            errores: resultados.array(),
+            errores: [{ msg: 'El usuario no esta registrado' }]
+        });
+    }
+
+    // Comprobacion para los usuarios confirmados.
+    if ( !user.confirmado ) {
+        return res.render('auth/login', {
+            pagina: 'Iniciar sesion',
+            errores: resultados.array(),
+            errores: [{ msg: 'Primero tenes que confirmar tu cuenta antes de iniciar sesion' }]
+        });
+    }
+
+    // Comprobando el password. 
+    if ( !user.verificarPassword(password) ) {
+        return res.render('auth/login', {
+            pagina: 'Iniciar sesion',
+            errores: resultados.array(),
+            errores: [{ msg: 'Password incorrecto' }]
+        });
+    } 
+
+    // Autenticar al usuario con jwt.
+    const token = generandoJWT({
+        id: user.id,
+        nombre: user.nombre,
+        email: user.email
+    });
+    return res.cookie('_token', token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: true,
+    })//.render('/misPropiedades')
+};
+
+
 const formRegistro = (req, res) => {
     res.render('auth/registro', {
         pagina: 'Crear cuenta',
     });
 };
+
 
 const recuperarCuenta = (req, res) => {
     res.render('auth/recuperarCuenta', {
@@ -261,4 +336,5 @@ export {
     resetearContraseña,
     comprobarToken,
     nuevoPassword,
+    autenticar,
 };
