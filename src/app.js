@@ -27,7 +27,7 @@ app.use(express.static('public'));
 
 // Configuración de rutas
 app.use('/', userRouter);
-app.use('/', propiedadesRouter);
+app.use('/propiedades', propiedadesRouter);
 
 // Conexion a la base de datos.
 try {
