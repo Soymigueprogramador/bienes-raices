@@ -3,17 +3,13 @@ import bcrypt from 'bcrypt';
 import User from '../models/User.model.js';
 import { 
     emailRegistro,
-    sendTestEmail,
     olvidePassword,
-    sendTestEmailPassword
 } from '../helpers/emails.js';
-import {
+import { 
     generandoId, 
-    generandoJWT
-} from '../helpers/tokend.js'
+    generandoJWT 
+} from '../helpers/tokend.js';
 import { v4 as uuidv4 } from 'uuid';
-import jwt from 'jsonwebtoken';
-import cookieParser from 'cookie-parser';
 
 // Controlador para confirmar la cuenta
 const comprobar = async (req, res) => {   
@@ -44,7 +40,6 @@ const comprobar = async (req, res) => {
         });
     }
 };
-
 
 // Controlador para registrar un usuario nuevo
 const registrar = async (req, res) => {
@@ -132,15 +127,7 @@ const inicio = (req, res) => {
     });
 };
 
-const formLogin = (req, res) => {
-    res.render('auth/login', {
-        paginaLogin: 'Iniciar sesión',
-    });
-};
-
-// Autenticando los usuarios en el login.
-const autenticar = async ( req, res ) => {
-    // Validacion de email y password. 
+const autenticar = async (req, res) => {
     await check('email')
         .isEmail()
         .withMessage('El email debe ser un email válido')
@@ -148,63 +135,63 @@ const autenticar = async ( req, res ) => {
 
     await check('password')
         .notEmpty()
-        .withMessage('La contraseña debe la misma que definiste al registrarte')
+        .withMessage('La contraseña es obligatoria')
         .run(req);
 
-        const resultados = validationResult(req);
-    
-        if (!resultados.isEmpty()) {
-            return res.render('auth/login', {
-                pagina: 'Iniciar sesion',
-                errores: resultados.array(),
-                
-            });
-        }
+    const resultados = validationResult(req);
 
-    // comprobando si el usuario existe.
+    if (!resultados.isEmpty()) {
+        return res.render('auth/login', {
+            pagina: 'Iniciar sesión',
+            errores: resultados.array(),
+        });
+    }
+
     const { email, password } = req.body;
-
     const user = await User.findOne({ where: { email } });
 
-    if ( !user ) {
+    if (!user) {
         return res.render('auth/login', {
-            pagina: 'Iniciar sesion',
-            errores: resultados.array(),
-            errores: [{ msg: 'El usuario no esta registrado' }]
+            pagina: 'Iniciar sesión',
+            errores: [{ msg: 'El usuario no está registrado' }],
         });
     }
 
-    // Comprobacion para los usuarios confirmados.
-    if ( !user.confirmado ) {
+    if (!user.confirmado) {
         return res.render('auth/login', {
-            pagina: 'Iniciar sesion',
-            errores: resultados.array(),
-            errores: [{ msg: 'Primero tenes que confirmar tu cuenta antes de iniciar sesion' }]
+            pagina: 'Iniciar sesión',
+            errores: [{ msg: 'Primero debes confirmar tu cuenta' }],
         });
     }
 
-    // Comprobando el password. 
-    if ( !user.verificarPassword(password) ) {
+    if (!bcrypt.compareSync(password, user.password)) {
         return res.render('auth/login', {
-            pagina: 'Iniciar sesion',
-            errores: resultados.array(),
-            errores: [{ msg: 'Password incorrecto' }]
+            pagina: 'Iniciar sesión',
+            errores: [{ msg: 'La contraseña es incorrecta' }],
         });
-    } 
+    }
 
-    // Autenticar al usuario con jwt.
     const token = generandoJWT({
         id: user.id,
         nombre: user.nombre,
-        email: user.email
+        email: user.email,
     });
-    return res.cookie('_token', token, {
+
+    res.cookie('_token', token, {
         httpOnly: true,
         secure: true,
-        sameSite: true,
-    })//.render('/misPropiedades')
+        sameSite: 'strict',
+    });
+
+    return res.redirect('/propiedades/misPropiedades');
 };
 
+// Formularios
+const formLogin = (req, res) => {
+    res.render('auth/login', {
+        pagina: 'Iniciar sesión',
+    });
+};
 
 const formRegistro = (req, res) => {
     res.render('auth/registro', {
@@ -212,18 +199,18 @@ const formRegistro = (req, res) => {
     });
 };
 
-
+// Recuperación de cuenta
 const recuperarCuenta = (req, res) => {
     res.render('auth/recuperarCuenta', {
         pagina: 'Recuperar cuenta',
     });
 };
 
-// Funcion para recuperar la contraseña.
+// Función para resetear la contraseña
 const resetearContraseña = async (req, res) => {
     await check('email')
         .isEmail()
-        .withMessage('El email debe ser un email válido')
+        .withMessage('El email debe ser válido')
         .run(req);
 
     const resultados = validationResult(req);
@@ -245,85 +232,77 @@ const resetearContraseña = async (req, res) => {
         });
     }
 
-    const generarId = () => uuidv4();
-    user.token = generarId(); 
+    user.token = uuidv4();
     await user.save();
 
-    // Enviar correo
     olvidePassword({
         email: user.email,
         nombre: user.name,
         token: user.token,
     });
 
-    // Mostrar mensaje al usuario
     return res.render('templates/message', {
         pagina: 'Recupera tu contraseña',
-        message: 'Te hemos enviado un correo con las instrucciones para recuperar tu cuenta',
+        message: 'Te enviamos un correo con instrucciones para recuperar tu cuenta',
     });
 };
 
-// Comprobacion del token del usuario que quiere cambiar su contraseña.
+// Confirmar token
 const comprobarToken = async (req, res) => {
     const { token } = req.params;
-    try {
-        const user = await User.findOne({ where: { token } });
+    const user = await User.findOne({ where: { token } });
 
-        if (!user) {
-            return res.render('auth/recuperarCuenta', {
-                pagina: 'Error',
-                message: 'El token no es válido o ha expirado.',
-                error: true,
-            });
-        }
-
-        res.render('auth/resetPassword', {
-            pagina: 'Restablece tu contraseña',
-            token: user.token,
-        });
-    } catch (error) {
-        console.error('Error al comprobar el token:', error);
-        return res.status(500).render('auth/recuperarCuenta', {
-            pagina: 'Error',
-            message: 'Hubo un problema al procesar tu solicitud. Intenta más tarde.',
+    if (!user) {
+        return res.render('auth/recuperarCuenta', {
+            pagina: 'Recuperar cuenta',
+            errores: [{ msg: 'Token inválido' }],
         });
     }
+
+    return res.render('auth/resetPassword', {
+        pagina: 'Restablece tu contraseña',
+        token: user.token,
+    });
 };
 
-// Guardando la nueva contraseña. 
-const nuevoPassword = async ( req, res  ) => {
-    // Validando el password.
+// Guardar nueva contraseña
+const nuevoPassword = async (req, res) => {
     await check('password')
         .isLength({ min: 4 })
         .withMessage('La contraseña debe tener al menos 4 caracteres')
         .run(req);
-    
-        const resultados = validationResult(req);
-        
-        if (!resultados.isEmpty()) {
-            return res.render('auth/registro', {
-                pagina: 'Restablece tu contraseña',
-                errores: resultados.array(),
-            });
-        };
 
-        const { token } = req.params;
-        const { password } = req.body;
+    const resultados = validationResult(req);
 
-        // Identificamos que usuario quiere hacer el cambio de password.
-        const user = await User.findOne({ where: { token } });
-
-        // Hasheando el nuevo password. 
-        const salt = await bcrypt.genSalt(10);
-        user.password = await bcrypt.hash(password, salt);
-        user.token = null; 
-        
-        await user.save(); 
-
-        return res.render('auth/cuentaConfirmada', {
-            pagina: 'Password restablecido',
-            message: 'Tu nueva contraseña se guardo correctamente ',
+    if (!resultados.isEmpty()) {
+        return res.render('auth/resetPassword', {
+            pagina: 'Restablece tu contraseña',
+            errores: resultados.array(),
         });
+    }
+
+    const { token } = req.params;
+    const { password } = req.body;
+
+    const user = await User.findOne({ where: { token } });
+
+    if (!user) {
+        return res.render('auth/resetPassword', {
+            pagina: 'Restablece tu contraseña',
+            errores: [{ msg: 'Token inválido' }],
+        });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(password, salt);
+    user.token = null;
+
+    await user.save();
+
+    return res.render('auth/cuentaConfirmada', {
+        pagina: 'Contraseña restablecida',
+        message: 'Tu contraseña fue actualizada exitosamente.',
+    });
 };
 
 export {

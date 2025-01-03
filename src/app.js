@@ -3,6 +3,7 @@ import express from 'express';
 import path from 'path';
 import { __dirname } from './util.js'; 
 import userRouter from './routes/user.router.js';
+import propiedadesRouter from './routes/propiedades.router.js';
 import db from './config/db.js';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
@@ -26,6 +27,7 @@ app.use(express.static('public'));
 
 // Configuración de rutas
 app.use('/', userRouter);
+app.use('/', propiedadesRouter);
 
 // Conexion a la base de datos.
 try {
