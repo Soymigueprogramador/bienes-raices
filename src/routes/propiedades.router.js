@@ -1,14 +1,13 @@
-// Importaciones necesarias.
 import express from 'express';
-import {
-    administradorPropiedades,
-} from '../controllers/propiedades.controllers.js';
+import { administradorPropiedades, crear } from '../controllers/propiedades.controllers.js';
 
-// Configurando el enrutador.
 const router = express.Router();
 
-// Ruta para mis propiedades.
+// Ruta para "Mis Propiedades"
 router.get('/misPropiedades', administradorPropiedades);
 
-// Exportacion del router.
+// Ruta para "Crear Propiedad"
+router.get('/crear', crear);
+
+// Exportación del router
 export default router;
