@@ -7,7 +7,6 @@
 const administradorPropiedades = ( req, res ) => {
     res.render('propiedades/administradorPropiedades', {
         pagina: 'Bienvenido a la vista del administrador de las propiedades',
-        
     });
 };
 

@@ -25,6 +25,80 @@ main {
     text-align: center;
 }
 
+.container {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.titulo-barra {
+    font-size: 1.5rem; 
+  line-height: 2rem;
+  color: #ffffff;
+  font-weight: 800; 
+  text-align: center; 
+}
+
+.titulo-barra2 {
+    font-weight: 400;
+}
+
+
+/* Estilos de la barra de navegacion */
+.header {
+    background-color: #4f46e5;
+    padding: 1rem;
+}
+
+.container {
+    width: 100%;
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.titulo-barra {
+    font-size: 1.5rem; 
+    line-height: 2rem; 
+    color: #ffffff; 
+    font-weight: 800; 
+    text-align: center; 
+}
+
+.titulo-barra2 {
+    font-weight: 400;
+}
+
+/* Estilos para la barra de navegacion */
+.navegacion {
+    margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 700;
+}
+
+.a {
+    color: #ffffff;
+}
+
+.salir {
+    background-color: #3730a3;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+    border-radius: 0.5rem;
+    color: #ffffff;
+}
+
+.salir:hover {
+    background-color: green;
+    cursor: pointer;
+}
 
 /* Registro y login */
 
@@ -190,11 +264,4 @@ input.submit:hover {
 
 .crearPropiedades:hover {
     background-color: green; 
-}
-
-/* Media query para el responsive */
-@media (min-width: 640px) { 
-    .crearPropiedades{
-      width: auto;
-    }
 }
