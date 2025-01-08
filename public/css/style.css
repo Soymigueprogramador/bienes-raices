@@ -265,3 +265,74 @@ input.submit:hover {
 .crearPropiedades:hover {
     background-color: green; 
 }
+
+/* Estilos para el formulario de carga de propiedades */
+.container-form-carga {
+  max-width: 800px; 
+  margin: 0 auto; 
+  padding: 1rem;
+  background-color: #3730a3;
+}
+
+form {
+  display: flex;
+  flex-direction: column; 
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+input.input-text,
+select.input-text {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.categorias {
+  display: flex;
+  flex-wrap: wrap; 
+  gap: 1rem;
+}
+
+.categorias .form-group {
+  flex: 1 1 calc(50% - 1rem); 
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 768px) {
+  .categorias {
+    flex-direction: column; 
+  }
+
+  .categorias .form-group {
+    flex: 1 1 100%; 
+  }
+}
+
+@media (max-width: 480px) {
+  .titulo h1 {
+    font-size: 1.5rem;
+  }
+
+  .titulo h2,
+  .titulo h3 {
+    font-size: 1.2rem;
+  }
+
+  input.input-text,
+  select.input-text {
+    font-size: 0.9rem;
+  }
+}

@@ -2,6 +2,32 @@ extends ../layout/index
 
 block contenido
   .titulo
-    h1.bienvenida Bienes
+    h1.bienvenida 
+      | Bienes
       span.rices Rices
     h2.subtitulo= pagina
+    h3.subtitulo= aviso
+
+  .container-form-carga
+    form(action="")
+      .form-group
+        label(for="titulo") Título
+        input#titulo.input-text(type="text" name="titulo" placeholder="Ingresa el título")
+      
+      div.categorias
+        
+        label(for="categorias") 
+        select#categorias.input-text(name="categorias")
+          option(value="") Selecciona el tipo de bibienda
+      
+        label(for="precio") 
+        select#precio.input-text(name="precio")
+          option(value="") Selecciona el precio
+
+        label(for="precio") 
+        select#precio.input-text(name="habitaciones")
+          option(value="") Selecciona la cantidad de habitaciones
+
+        label(for="precio") 
+        select#precio.input-text(name="habitaciones")
+          option(value="") Selecciona la cantidad de dias disponibles 

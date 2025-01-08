@@ -9,6 +9,7 @@ const administradorPropiedades = (req, res) => {
   const crear = (req, res) => {
     res.render('propiedades/crear', {
       pagina: 'Crear propiedad',
+      aviso: 'Formulario para la carga de una propiedad',
     });
   };
   
