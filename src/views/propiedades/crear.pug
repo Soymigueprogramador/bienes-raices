@@ -13,21 +13,49 @@ block contenido
       .form-group
         label(for="titulo") Título
         input#titulo.input-text(type="text" name="titulo" placeholder="Ingresa el título")
-      
-      div.categorias
-        
-        label(for="categorias") 
+
+      .categorias
+        label(for="categorias") Tipo de Bienes
         select#categorias.input-text(name="categorias")
-          option(value="") Selecciona el tipo de bibienda
+          option(value="") Selecciona el tipo de vivienda
+          
       
-        label(for="precio") 
+        label(for="precio") Precio
         select#precio.input-text(name="precio")
-          option(value="") Selecciona el precio
-
-        label(for="precio") 
-        select#precio.input-text(name="habitaciones")
+          option(value="") Selecciona el rango de precio
+          
+        label(for="habitaciones") Habitaciones
+        select#habitaciones.input-text(name="habitaciones")
           option(value="") Selecciona la cantidad de habitaciones
+          
 
-        label(for="precio") 
-        select#precio.input-text(name="habitaciones")
-          option(value="") Selecciona la cantidad de dias disponibles 
+        label(for="dias-disponibles") Provincia
+        select#dias-disponibles.input-text(name="provincia")
+          option(value="") Selecciona la provincia
+        
+        label(for="dias-disponibles") Cuidad
+        select#dias-disponibles.input-text(name="cuidad")
+          option(value="") Selecciona la cuidad
+
+        label(for="dias-disponibles") Partido
+        select#dias-disponibles.input-text(name="partido")
+          option(value="") Selecciona el partido
+
+        label(for="dias-disponibles") Localidad
+        select#dias-disponibles.input-text(name="localidad")
+          option(value="") Selecciona la localidad
+
+        label(for="dias-disponibles") Duracion del alqueler
+        select#dias-disponibles.input-text(name="duracion-del-alquiler")
+          option(value="") Selecciona la duracion del alquiler
+      
+      label(for="titulo") Direccion
+      input#titulo.input-text(type="text" name="direccion" placeholder="Ingresa la direccion del domicilio")
+
+      label(for="titulo") Telefono
+      input#titulo.input-text(type="number" name="telefono" placeholder="Ingresa tu numero de telefono")
+
+      label(for="titulo") Email (Opcional)
+      input#titulo.input-text(type="email" name="email" placeholder="Ingresa tu email")
+
+      input.submit(type="submit" value="Cargar propiedad")

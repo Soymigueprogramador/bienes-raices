@@ -268,7 +268,7 @@ input.submit:hover {
 
 /* Estilos para el formulario de carga de propiedades */
 .container-form-carga {
-  max-width: 800px; 
+  max-width: 600px;
   margin: 0 auto; 
   padding: 1rem;
   background-color: #3730a3;
